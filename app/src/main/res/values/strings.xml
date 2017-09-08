@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Jingdong Mall</string>
+    <drawable name="anhong">#A83A3A</drawable>
+    <drawable name="red">#F15353</drawable>
+</resources>
