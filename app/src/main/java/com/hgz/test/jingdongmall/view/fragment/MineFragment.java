@@ -68,17 +68,22 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         SharedPreferences sp = getActivity().getSharedPreferences("qqdata", Context.MODE_PRIVATE);
         name = sp.getString("name", "登陆/注册");
-        iconurl = sp.getString("iconurl", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1504860474260&di=7c436753cab55939b34545ba59c1874c&imgtype=0&src=http%3A%2F%2F58pic.ooopic.com%2F58pic%2F12%2F81%2F62%2F16C58PICFGE.jpg");
+        iconurl = sp.getString("iconurl", "1");
+        if (iconurl.equals("1")){
+            ivLoginOrRegister.setImageResource(R.drawable.b3h);
+        }else {
+            Glide.with(this).load(iconurl).asBitmap().centerCrop().into(new BitmapImageViewTarget(ivLoginOrRegister) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable circularBitmapDrawable =
+                            RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+                    ivLoginOrRegister.setImageDrawable(circularBitmapDrawable);
+                }
+            });
+        }
         tvLoginOrRegister.setText(name);
         //设置圆形图片
-        Glide.with(this).load(iconurl).asBitmap().centerCrop().into(new BitmapImageViewTarget(ivLoginOrRegister) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable circularBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                circularBitmapDrawable.setCircular(true);
-                ivLoginOrRegister.setImageDrawable(circularBitmapDrawable);
-            }
-        });
+
     }
 }

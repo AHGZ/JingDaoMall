@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JingdongMall.iml" filepath="$PROJECT_DIR$/JingdongMall.iml" />
+      <module fileurl="file://$PROJECT_DIR$/QRcCodeScanLibrary/QRcCodeScanLibrary.iml" filepath="$PROJECT_DIR$/QRcCodeScanLibrary/QRcCodeScanLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/swiperefreshlayoutlibrary/swiperefreshlayoutlibrary.iml" filepath="$PROJECT_DIR$/swiperefreshlayoutlibrary/swiperefreshlayoutlibrary.iml" />
     </modules>

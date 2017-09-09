@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -27,6 +28,7 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/imageView"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
@@ -72,21 +74,17 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <ScrollView
-            android:id="@+id/classify_scrollView"
+        <q.rorbin.verticaltablayout.VerticalTabLayout
+            android:id="@+id/classify_tab"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:fadingEdge="none"
-            android:scrollbars="none">
+            app:indicator_color="#F3F5F7"
+            app:indicator_gravity="fill"
+            app:tab_mode="scrollable"
+            app:tab_height="50dp">
 
-            <LinearLayout
-                android:id="@+id/classify_lin"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal"
-                android:orientation="vertical"></LinearLayout>
-        </ScrollView>
+        </q.rorbin.verticaltablayout.VerticalTabLayout>
         <LinearLayout
             android:id="@+id/goods"
             android:layout_width="match_parent"
@@ -94,7 +92,10 @@
             android:layout_weight="1"
             android:background="#F3F5F7"
             android:orientation="vertical">
-
+            <android.support.v4.view.ViewPager
+                android:id="@+id/classify_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></android.support.v4.view.ViewPager>
         </LinearLayout>
 
     </LinearLayout>

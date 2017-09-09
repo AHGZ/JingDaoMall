@@ -7,11 +7,13 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.hgz.test.jingdongmall.R;
 import com.hgz.test.jingdongmall.view.adapter.MyHomeViewPagerAdapter;
+import com.library.zxing.activity.QRCodeScanFragment;
 import com.youth.banner.Banner;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
  * Created by Administrator on 2017/9/6.
  */
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends QRCodeScanFragment {
 
     private View view;
     private ArrayList<Integer> imageViews;
@@ -31,6 +33,7 @@ public class HomeFragment extends Fragment {
     private Banner homeBanner1;
     private Banner homeBanner2;
     private MyHomeViewPagerAdapter myHomeViewPagerAdapter;
+    private LinearLayout homesaoyisao;
 
     @Nullable
     @Override
@@ -64,13 +67,19 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
+        homesaoyisao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startScanQRCode();
+            }
+        });
     }
 
     private void initView() {
         homeViewpager = (ViewPager) view.findViewById(R.id.homeViewpager);
         radioGroup = (RadioGroup) view.findViewById(R.id.homeViewpager_radioGroup);
         homeBanner1 = (Banner) view.findViewById(R.id.home_banner);
+        homesaoyisao = (LinearLayout) view.findViewById(R.id.homesaoyisao);
         //设置homeBanner1样式
         homeBanner1.setBannerStyle(Banner.CIRCLE_INDICATOR);
         homeBanner1.setIndicatorGravity(Banner.CENTER);

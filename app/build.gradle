@@ -48,4 +48,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
     compile project(':swiperefreshlayoutlibrary')
     compile files('libs/SocialSDK_QQ_Simplify.jar')
+    compile project(':QRcCodeScanLibrary')
+    compile 'q.rorbin:VerticalTabLayout:1.2.5'
 }
