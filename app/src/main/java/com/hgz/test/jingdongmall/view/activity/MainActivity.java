@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RadioGroup radioGroup;
     private FrameLayout frameLayout;
     private Fragment[] fragments;
-    private int mIndex=0;
+    private int mIndex = 0;
 
 
     @Override
@@ -50,9 +50,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                for (int i = 0; i< radioGroup.getChildCount(); i++){
+                for (int i = 0; i < radioGroup.getChildCount(); i++) {
                     RadioButton radioButton = (RadioButton) radioGroup.getChildAt(i);
-                    if (radioButton.isChecked()){
+                    if (radioButton.isChecked()) {
                         setFragmentHideOrShow(i);
                     }
                 }
@@ -82,27 +82,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //默认设置第一个fragment显示
         setFragmentHideOrShow(0);
     }
+
     //显示隐藏fragment的方法
-    private void setFragmentHideOrShow(int index){
-        if(mIndex==index){
+    private void setFragmentHideOrShow(int index) {
+        if (mIndex == index) {
             return;
         }
-        FragmentManager    fragmentManager = getSupportFragmentManager();
-        FragmentTransaction ft= fragmentManager.beginTransaction();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
 
         //隐藏
         ft.hide(fragments[mIndex]);
         //判断是否添加
-        if(!fragments[index].isAdded()){
-            ft.add(R.id.frameLayout,fragments[index]).show(fragments[index]);
-        }else {
+        if (!fragments[index].isAdded()) {
+            ft.add(R.id.frameLayout, fragments[index]).show(fragments[index]);
+        } else {
             ft.show(fragments[index]);
+        }
+        if (index == 0) {
+            ((HomeFragment) fragments[index]).scrollScrollView();
         }
 
         ft.commit();
         //再次赋值
-        mIndex=index;
+        mIndex = index;
     }
+
     //替换Fragment的方法
 //    private void setFragmentHideOrShow(int index) {
 //        switch (index) {

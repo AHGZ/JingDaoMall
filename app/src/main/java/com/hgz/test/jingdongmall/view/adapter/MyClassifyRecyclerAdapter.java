@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hgz.test.jingdongmall.R;
@@ -18,17 +19,46 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.parent=parent;
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.classify_recyclerview_items, parent, false);
-        MyClassifyViewholder myClassifyViewholder = new MyClassifyViewholder(view);
-        return myClassifyViewholder;
+        View view=null;
+        RecyclerView.ViewHolder holder = null;
+        switch (viewType){
+            case 0:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.classify_recyclerview_items2, parent, false);
+                holder=new MyClassifyViewholder2(view);
+                break;
+            case 1:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.classify_recyclerview_items, parent, false);
+                holder=new MyClassifyViewholder(view);
+                break;
+        }
+        return holder;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position==0){
+            return 0;
+        }else {
+            return 1;
+        }
+
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        MyClassifyViewholder myholder= (MyClassifyViewholder) holder;
-        myholder.textView.setText("精品男装");
-        MyGridViewAdapter myGridViewAdapter = new MyGridViewAdapter(parent.getContext());
-        myholder.gridView.setAdapter(myGridViewAdapter);
+        switch (getItemViewType(position)){
+            case 0:
+                MyClassifyViewholder2 myHolder2= (MyClassifyViewholder2) holder;
+                myHolder2.imageView.setImageResource(R.drawable.jsbundles_jdreactintlbrand_images_brand_enter_afterenter_bg);
+                break;
+            case 1:
+                MyClassifyViewholder myHolder= (MyClassifyViewholder) holder;
+                myHolder.textView.setText("精品男装");
+                MyGridViewAdapter myGridViewAdapter = new MyGridViewAdapter(parent.getContext());
+                myHolder.gridView.setAdapter(myGridViewAdapter);
+                break;
+        }
+
     }
     public class MyClassifyViewholder extends RecyclerView.ViewHolder {
         private TextView textView;
@@ -38,6 +68,16 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.classify_recyclerview_title);
             gridView = (GridView) itemView.findViewById(R.id.classify_recyclerview_gridview);
+        }
+
+    }
+    public class MyClassifyViewholder2 extends RecyclerView.ViewHolder {
+
+        private final ImageView imageView;
+
+        public MyClassifyViewholder2(View itemView) {
+            super(itemView);
+            imageView = (ImageView) itemView.findViewById(R.id.classify_recyclerview_image);
         }
 
     }

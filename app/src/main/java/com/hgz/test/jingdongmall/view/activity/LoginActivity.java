@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -41,7 +42,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private CheckBox checkShowOrHide;
     private ImageView qq_login;
     private SharedPreferences.Editor edit;
-
+    private int color=0XffD3D3D3;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,8 +73,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     if (etUsename != null) {
                         String nameText = etUsename.getText().toString().trim();
                         if (TextUtils.isEmpty(nameText)) {
+                            cleanUserName.setVisibility(View.INVISIBLE);
 
-                        } else {
+                        } else{
                             cleanUserName.setVisibility(View.VISIBLE);
                         }
                     }
@@ -85,22 +87,22 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             }
         });
 
-//        etUsename.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//            }
-//        });
+        etUsename.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                cleanUserName.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         etPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -118,6 +120,23 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     cleanPassword.setVisibility(View.INVISIBLE);
 
                 }
+            }
+        });
+        etPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                cleanPassword.setVisibility(View.VISIBLE);
+                btnLogin.setBackgroundResource(R.drawable.my_btnlogin_selector);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
         checkShowOrHide.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -153,12 +172,15 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             case R.id.clean_user_name:
                 if (!TextUtils.isEmpty(etUsename.getText().toString())){
                     etUsename.setText("");
+                    cleanUserName.setVisibility(View.INVISIBLE);
+                    btnLogin.setBackgroundColor(color);
                 }
                 break;
             case R.id.clean_password:
                 if (!TextUtils.isEmpty(etPassword.getText().toString())){
                     etPassword.setText("");
                     cleanPassword.setVisibility(View.INVISIBLE);
+                    btnLogin.setBackgroundColor(color);
                 }
                 break;
             case R.id.btn_login:

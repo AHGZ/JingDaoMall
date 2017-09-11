@@ -4,14 +4,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 
 import com.hgz.test.jingdongmall.R;
+import com.hgz.test.jingdongmall.view.adapter.MyHomeRecyclerviewAdapter;
 import com.hgz.test.jingdongmall.view.adapter.MyHomeViewPagerAdapter;
 import com.library.zxing.activity.QRCodeScanFragment;
 import com.youth.banner.Banner;
@@ -34,6 +38,7 @@ public class HomeFragment extends QRCodeScanFragment {
     private Banner homeBanner2;
     private MyHomeViewPagerAdapter myHomeViewPagerAdapter;
     private LinearLayout homesaoyisao;
+    private RecyclerView recyclerView;
 
     @Nullable
     @Override
@@ -73,13 +78,19 @@ public class HomeFragment extends QRCodeScanFragment {
                 startScanQRCode();
             }
         });
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        MyHomeRecyclerviewAdapter myHomeRecyclerviewAdapter = new MyHomeRecyclerviewAdapter();
+        recyclerView.setAdapter(myHomeRecyclerviewAdapter);
     }
-
+    ScrollView  scrollView;
     private void initView() {
+          scrollView = (ScrollView) view.findViewById(R.id.pull_refresh_scroll);
         homeViewpager = (ViewPager) view.findViewById(R.id.homeViewpager);
         radioGroup = (RadioGroup) view.findViewById(R.id.homeViewpager_radioGroup);
         homeBanner1 = (Banner) view.findViewById(R.id.home_banner);
         homesaoyisao = (LinearLayout) view.findViewById(R.id.homesaoyisao);
+        recyclerView = (RecyclerView) view.findViewById(R.id.home_recyclerview);
         //设置homeBanner1样式
         homeBanner1.setBannerStyle(Banner.CIRCLE_INDICATOR);
         homeBanner1.setIndicatorGravity(Banner.CENTER);
@@ -87,7 +98,22 @@ public class HomeFragment extends QRCodeScanFragment {
         homeBanner1.setImages(images);//可以选择设置图片网址，或者资源文件，默认用Glide加载
         RadioButton radioButton2 = (RadioButton) radioGroup.getChildAt(0);
         radioButton2.setChecked(true);
+
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        scrollView.smoothScrollTo(0,0);
+    }
+
+    public void scrollScrollView(){
+        if(scrollView!=null){
+            scrollView.smoothScrollTo(0,0);
+        }
+    }
+
+
 
     private void initData() {
         imageViews = new ArrayList<>();
