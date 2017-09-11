@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.hgz.test.jingdongmall.R;
@@ -71,14 +72,17 @@ public class ShoppingTrolleyFragment extends Fragment {
                 list.remove(position);
                 listView.setAdapter(myListviewAdapter);
                 myListviewAdapter.notifyDataSetChanged();
+                CalculatedHeightUtil.setListHeight(listView);
                 Toast.makeText(getContext(),"长安了",Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
     }
+    ScrollView scrollView;
     private void initView(){
         recyclerView = (RecyclerView) view.findViewById(R.id.shopping_trolley_recyclerview);
         listView = (ListView) view.findViewById(R.id.listview);
+         scrollView= (ScrollView) view.findViewById(R.id.scroll);
         allselect = (CheckBox) view.findViewById(R.id.check_allselect);
     }
 }

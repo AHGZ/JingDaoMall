@@ -53,6 +53,7 @@
         android:background="#F0F2F5" />
 
     <ScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
