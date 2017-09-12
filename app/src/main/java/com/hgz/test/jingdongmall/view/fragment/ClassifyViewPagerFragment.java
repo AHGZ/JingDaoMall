@@ -53,40 +53,11 @@ public class ClassifyViewPagerFragment extends Fragment {
     }
 
     private void initData() {
-        int gcId=0;
-        String classifytabname = getArguments().getString("classifytabname");
-        if (classifytabname.equals("服饰鞋帽")){
-            gcId=1;
-        }else if (classifytabname.equals("礼品箱包")){
-            gcId=2;
-        }else if (classifytabname.equals("家居家装")){
-            gcId=3;
-        }else if (classifytabname.equals("数码办公")){
-            gcId=4;
-        }else if (classifytabname.equals("家用电器")){
-            gcId=5;
-        }else if (classifytabname.equals("个护化妆")){
-            gcId=6;
-        }else if (classifytabname.equals("珠宝手表")){
-            gcId=7;
-        }else if (classifytabname.equals("食品饮料")){
-            gcId=8;
-        }else if (classifytabname.equals("运动健康")){
-            gcId=9;
-        }else if (classifytabname.equals("汽车用品")){
-            gcId=10;
-        }else if (classifytabname.equals("玩具乐器")){
-            gcId=11;
-        }else if (classifytabname.equals("厨具")){
-            gcId=12;
-        }else if (classifytabname.equals("母婴用品")){
-            gcId=13;
-        }else if (classifytabname.equals("虚拟充值")){
-            gcId=14;
-        }
+        final String classifytabid = getArguments().getString("classifytabid");
+        System.out.println("==============="+classifytabid);
         OkHttpClient okHttpClient = MyApplication.okHttpClient();
         Request request = new Request.Builder()
-                .url("http://169.254.254.18/mobile/index.php?act=goods_class&gc_id="+gcId)
+                .url("http://169.254.254.18/mobile/index.php?act=goods_class&gc_id="+classifytabid)
                 .build();
         okHttpClient.newCall(request).enqueue(new Callback() {
 
@@ -109,7 +80,7 @@ public class ClassifyViewPagerFragment extends Fragment {
                             List<ClassifyRecyclerviewTextBean.DatasBean.ClassListBean> classtext_list = classifyRecyclerviewTextBean.getDatas().getClass_list();
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
                             recyclerView.setLayoutManager(linearLayoutManager);
-                            MyClassifyRecyclerAdapter classifyRecyclerAdapter = new MyClassifyRecyclerAdapter(classtext_list);
+                            MyClassifyRecyclerAdapter classifyRecyclerAdapter = new MyClassifyRecyclerAdapter(getActivity(),classtext_list);
                             recyclerView.setAdapter(classifyRecyclerAdapter);
                         }
                     });

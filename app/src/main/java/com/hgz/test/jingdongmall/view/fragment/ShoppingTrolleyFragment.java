@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.hgz.test.jingdongmall.R;
 import com.hgz.test.jingdongmall.view.adapter.MyListviewAdapter;
@@ -34,6 +35,7 @@ public class ShoppingTrolleyFragment extends Fragment {
     private CheckBox allselect;
     private MyListviewAdapter myListviewAdapter;
     private ImageView weizhi;
+    private TextView heji;
 
     @Nullable
     @Override
@@ -60,6 +62,7 @@ public class ShoppingTrolleyFragment extends Fragment {
                 myListviewAdapter.notifyDataSetChanged();
             }
         });
+
         allselect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -76,6 +79,15 @@ public class ShoppingTrolleyFragment extends Fragment {
                 return true;
             }
         });
+
+        myListviewAdapter.setGetSumPrice(new MyListviewAdapter.GetSumPrice() {
+            @Override
+            public void sumprice(int sum) {
+                heji.setText("合计：¥" + sum + ".00");
+            }
+        });
+
+
     }
 
     private void initView() {
@@ -83,5 +95,6 @@ public class ShoppingTrolleyFragment extends Fragment {
         listView = (ListView) view.findViewById(R.id.listview);
         allselect = (CheckBox) view.findViewById(R.id.check_allselect);
         weizhi = (ImageView) view.findViewById(R.id.iv_weizhi);
+        heji = (TextView) view.findViewById(R.id.tv_heji);
     }
 }

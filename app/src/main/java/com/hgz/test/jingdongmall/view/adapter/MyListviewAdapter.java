@@ -23,6 +23,14 @@ public class MyListviewAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<String> list;
     private HashMap<Integer, Boolean> hashMap;
+
+    private GetSumPrice getSumPrice;
+    public interface GetSumPrice{
+        void sumprice(int sum);
+    }
+    public void setGetSumPrice(GetSumPrice getSumPrice){
+        this.getSumPrice=getSumPrice;
+    }
     public MyListviewAdapter(Context context, ArrayList<String> list) {
         hashMap = new HashMap<>();
         this.context = context;
@@ -56,15 +64,25 @@ public class MyListviewAdapter extends BaseAdapter {
         ImageView imageView = (ImageView) convertView.findViewById(R.id.listview_image);
         TextView description= (TextView) convertView.findViewById(R.id.listview_description);
         TextView color = (TextView) convertView.findViewById(R.id.listview_color);
-        TextView price= (TextView) convertView.findViewById(R.id.listview_price);
+        final TextView price= (TextView) convertView.findViewById(R.id.listview_price);
         ImageView cutDown = (ImageView) convertView.findViewById(R.id.listview_cut_down);
         final TextView count = (TextView) convertView.findViewById(R.id.listview_count);
         ImageView add = (ImageView) convertView.findViewById(R.id.listview_add);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int prices=0;
                 hashMap.put(position, !hashMap.get(position));
                 notifyDataSetChanged();
+                if (hashMap.get(position)==true){
+                    int oneprice = Integer.parseInt(price.getText().toString());
+                    int counts = Integer.parseInt(count.getText().toString());
+                    prices=oneprice*counts;
+                    if (getSumPrice!=null){
+                        getSumPrice.sumprice(prices);
+                    }
+
+                }
 
             }
         });
@@ -88,6 +106,7 @@ public class MyListviewAdapter extends BaseAdapter {
                 count.setText((counts+1)+"");
             }
         });
+
         return convertView;
     }
     //全选

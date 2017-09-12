@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hgz.test.jingdongmall.R;
+import com.hgz.test.jingdongmall.bean.ClassifyGridViewBean;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/9/9.
@@ -15,18 +18,20 @@ import com.hgz.test.jingdongmall.R;
 
 public class MyGridViewAdapter extends BaseAdapter{
     private Context context;
-    public MyGridViewAdapter(Context context) {
+    private  List<ClassifyGridViewBean.DatasBean.ClassListBean> classgridview_list;
+    public MyGridViewAdapter(Context context, List<ClassifyGridViewBean.DatasBean.ClassListBean> classgridview_list) {
         this.context=context;
+        this.classgridview_list=classgridview_list;
     }
 
     @Override
     public int getCount() {
-        return 9;
+        return classgridview_list.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return classgridview_list.get(position);
     }
 
     @Override
@@ -41,7 +46,7 @@ public class MyGridViewAdapter extends BaseAdapter{
         }
         TextView text= (TextView) convertView.findViewById(R.id.gridview_item_text);
         ImageView image = (ImageView) convertView.findViewById(R.id.gridview_item_image);
-        text.setText("新品T恤");
+        text.setText(classgridview_list.get(position).getGc_name());
         image.setImageResource(R.drawable.nanzhuang);
         return convertView;
     }

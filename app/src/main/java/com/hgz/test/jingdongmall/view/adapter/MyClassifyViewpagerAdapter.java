@@ -25,7 +25,7 @@ public class MyClassifyViewpagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         ClassifyViewPagerFragment classifyViewPagerFragment = new ClassifyViewPagerFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("classifytabname",titles.get(position).getGc_name());
+        bundle.putString("classifytabid",titles.get(position).getGc_id());
         classifyViewPagerFragment.setArguments(bundle);
         return classifyViewPagerFragment;
     }

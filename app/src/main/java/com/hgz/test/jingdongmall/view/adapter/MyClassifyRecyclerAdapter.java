@@ -1,5 +1,6 @@
 package com.hgz.test.jingdongmall.view.adapter;
 
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +9,20 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.hgz.test.jingdongmall.R;
+import com.hgz.test.jingdongmall.app.MyApplication;
+import com.hgz.test.jingdongmall.bean.ClassifyGridViewBean;
 import com.hgz.test.jingdongmall.bean.ClassifyRecyclerviewTextBean;
 
+import java.io.IOException;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2017/9/9.
@@ -20,9 +31,15 @@ import java.util.List;
 public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
     private ViewGroup parent;
     private List<ClassifyRecyclerviewTextBean.DatasBean.ClassListBean> classtext_list;
-    public MyClassifyRecyclerAdapter(List<ClassifyRecyclerviewTextBean.DatasBean.ClassListBean> classtext_list) {
+    private Activity activity;
+
+
+    public MyClassifyRecyclerAdapter(Activity activity, List<ClassifyRecyclerviewTextBean.DatasBean.ClassListBean> classtext_list) {
         this.classtext_list=classtext_list;
+        this.activity=activity;
     }
+
+
 
 
     @Override
@@ -62,10 +79,34 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
                 myHolder2.imageView.setImageResource(R.drawable.jsbundles_jdreactintlbrand_images_brand_enter_afterenter_bg);
                 break;
             case 1:
-                MyClassifyViewholder myHolder= (MyClassifyViewholder) holder;
+                final MyClassifyViewholder myHolder= (MyClassifyViewholder) holder;
                 myHolder.textView.setText(classtext_list.get(position).getGc_name());
-                MyGridViewAdapter myGridViewAdapter = new MyGridViewAdapter(parent.getContext());
-                myHolder.gridView.setAdapter(myGridViewAdapter);
+                OkHttpClient okHttpClient = MyApplication.okHttpClient();
+                Request request=new Request.Builder()
+                        .url("http://169.254.254.18/mobile/index.php?act=goods_class&gc_id="+classtext_list.get(position).getGc_id())
+                        .build();
+                okHttpClient.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        final String json = response.body().string();
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Gson gson = new Gson();
+                                ClassifyGridViewBean classifyGridViewBean = gson.fromJson(json, ClassifyGridViewBean.class);
+                                List<ClassifyGridViewBean.DatasBean.ClassListBean> classgridview_list = classifyGridViewBean.getDatas().getClass_list();
+                                MyGridViewAdapter myGridViewAdapter = new MyGridViewAdapter(parent.getContext(),classgridview_list);
+                                myHolder.gridView.setAdapter(myGridViewAdapter);
+                            }
+                        });
+                    }
+                });
+
                 break;
         }
 
@@ -95,5 +136,8 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
     @Override
     public int getItemCount() {
         return classtext_list.size();
+    }
+    private void initData(){
+
     }
 }
