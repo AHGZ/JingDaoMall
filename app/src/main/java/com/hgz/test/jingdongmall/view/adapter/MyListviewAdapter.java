@@ -58,7 +58,7 @@ public class MyListviewAdapter extends BaseAdapter {
         TextView color = (TextView) convertView.findViewById(R.id.listview_color);
         TextView price= (TextView) convertView.findViewById(R.id.listview_price);
         ImageView cutDown = (ImageView) convertView.findViewById(R.id.listview_cut_down);
-        TextView count = (TextView) convertView.findViewById(R.id.listview_count);
+        final TextView count = (TextView) convertView.findViewById(R.id.listview_count);
         ImageView add = (ImageView) convertView.findViewById(R.id.listview_add);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +69,25 @@ public class MyListviewAdapter extends BaseAdapter {
             }
         });
         checkBox.setChecked(hashMap.get(position));
+        cutDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int counts = Integer.parseInt(count.getText().toString());
+                if (counts>1){
+                    count.setText((counts-1)+"");
+                }else{
+                    count.setText(1+"");
+                }
+
+            }
+        });
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int counts = Integer.parseInt(count.getText().toString());
+                count.setText((counts+1)+"");
+            }
+        });
         return convertView;
     }
     //全选

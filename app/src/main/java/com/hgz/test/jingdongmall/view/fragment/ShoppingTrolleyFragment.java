@@ -11,9 +11,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.hgz.test.jingdongmall.R;
 import com.hgz.test.jingdongmall.view.adapter.MyListviewAdapter;
@@ -34,6 +33,7 @@ public class ShoppingTrolleyFragment extends Fragment {
     private ArrayList<String> list = new ArrayList<>();
     private CheckBox allselect;
     private MyListviewAdapter myListviewAdapter;
+    private ImageView weizhi;
 
     @Nullable
     @Override
@@ -54,7 +54,7 @@ public class ShoppingTrolleyFragment extends Fragment {
             @Override
             public void setItemsOnClick(int position) {
                 list.add("1");
-                myListviewAdapter = new MyListviewAdapter(getContext(),list);
+                myListviewAdapter = new MyListviewAdapter(getContext(), list);
                 listView.setAdapter(myListviewAdapter);
                 CalculatedHeightUtil.setListHeight(listView);
                 myListviewAdapter.notifyDataSetChanged();
@@ -73,16 +73,15 @@ public class ShoppingTrolleyFragment extends Fragment {
                 listView.setAdapter(myListviewAdapter);
                 myListviewAdapter.notifyDataSetChanged();
                 CalculatedHeightUtil.setListHeight(listView);
-                Toast.makeText(getContext(),"长安了",Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
     }
-    ScrollView scrollView;
-    private void initView(){
+
+    private void initView() {
         recyclerView = (RecyclerView) view.findViewById(R.id.shopping_trolley_recyclerview);
         listView = (ListView) view.findViewById(R.id.listview);
-         scrollView= (ScrollView) view.findViewById(R.id.scroll);
         allselect = (CheckBox) view.findViewById(R.id.check_allselect);
+        weizhi = (ImageView) view.findViewById(R.id.iv_weizhi);
     }
 }

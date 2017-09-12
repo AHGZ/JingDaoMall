@@ -48,6 +48,7 @@ public class TabFragment extends Fragment{
         recyclerRefresh.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark, android.R.color.holo_red_dark);
         //设置是否支持刷新和加载更多
         recyclerRefresh.setDirection(SwipyRefreshLayoutDirection.BOTH);
+
         recyclerRefresh.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh(int index) {

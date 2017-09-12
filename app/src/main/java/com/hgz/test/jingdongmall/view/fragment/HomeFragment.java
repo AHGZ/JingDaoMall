@@ -33,7 +33,7 @@ public class HomeFragment extends QRCodeScanFragment {
     private ViewPager homeViewpager;
     private ArrayList<Fragment> views;
     private RadioGroup radioGroup;
-    Integer[] images = new Integer[]{R.drawable.a9t,R.drawable.a9w,R.drawable.adk};
+    private String[] images;
     private Banner homeBanner1;
     private Banner homeBanner2;
     private MyHomeViewPagerAdapter myHomeViewPagerAdapter;
@@ -50,9 +50,8 @@ public class HomeFragment extends QRCodeScanFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initView();
         initData();
-
+        initView();
         myHomeViewPagerAdapter = new MyHomeViewPagerAdapter(getActivity().getSupportFragmentManager(), views);
         homeViewpager.setAdapter(myHomeViewPagerAdapter);
         homeViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -83,9 +82,11 @@ public class HomeFragment extends QRCodeScanFragment {
         MyHomeRecyclerviewAdapter myHomeRecyclerviewAdapter = new MyHomeRecyclerviewAdapter();
         recyclerView.setAdapter(myHomeRecyclerviewAdapter);
     }
-    ScrollView  scrollView;
+
+    ScrollView scrollView;
+
     private void initView() {
-          scrollView = (ScrollView) view.findViewById(R.id.pull_refresh_scroll);
+        scrollView = (ScrollView) view.findViewById(R.id.pull_refresh_scroll);
         homeViewpager = (ViewPager) view.findViewById(R.id.homeViewpager);
         radioGroup = (RadioGroup) view.findViewById(R.id.homeViewpager_radioGroup);
         homeBanner1 = (Banner) view.findViewById(R.id.home_banner);
@@ -104,15 +105,14 @@ public class HomeFragment extends QRCodeScanFragment {
     @Override
     public void onResume() {
         super.onResume();
-        scrollView.smoothScrollTo(0,0);
+        scrollView.smoothScrollTo(0, 0);
     }
 
-    public void scrollScrollView(){
-        if(scrollView!=null){
-            scrollView.smoothScrollTo(0,0);
+    public void scrollScrollView() {
+        if (scrollView != null) {
+            scrollView.smoothScrollTo(0, 0);
         }
     }
-
 
 
     private void initData() {
@@ -125,5 +125,13 @@ public class HomeFragment extends QRCodeScanFragment {
         HomeViewpager2Fragment homeViewpager2Fragment = new HomeViewpager2Fragment();
         views.add(homeViewpager1Fragment);
         views.add(homeViewpager2Fragment);
+        images = new String[]{"https://img14.360buyimg.com/da/jfs/t8380/119/300584693/62704/5d07a5d/59a4bf60N67e35778.jpg",
+                "https://img1.360buyimg.com/da/jfs/t7324/354/2665000409/94483/41814fb/59b2551eNb4f04183.jpg",
+                "https://img1.360buyimg.com/da/jfs/t8431/284/477854473/99917/47e31702/59a91e71N1c4a1448.jpg",
+                "https://img12.360buyimg.com/babel/jfs/t7546/303/2895014485/114582/dc04f9e8/59b65103N2085ffa9.jpg",
+                "https://img20.360buyimg.com/da/jfs/t9163/71/400427467/41277/8dbf5f28/59a7a48aN7a42d3fe.jpg",
+                "https://img14.360buyimg.com/babel/jfs/t8638/200/1234149431/119735/6c3312d1/59b62500Nbdb53d03.jpg",
+                "https://img10.360buyimg.com/babel/jfs/t8320/150/1227766208/84920/c9c11e2/59b6674eNfa4d8466.jpg",
+                "https://img11.360buyimg.com/babel/jfs/t8899/346/1243045779/95475/1dac304c/59b626bbNeaf14b36.jpg"};
     }
 }

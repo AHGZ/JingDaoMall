@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hgz.test.jingdongmall.R;
+import com.hgz.test.jingdongmall.bean.ClassifyRecyclerviewTextBean;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/9/9.
@@ -16,6 +19,12 @@ import com.hgz.test.jingdongmall.R;
 
 public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
     private ViewGroup parent;
+    private List<ClassifyRecyclerviewTextBean.DatasBean.ClassListBean> classtext_list;
+    public MyClassifyRecyclerAdapter(List<ClassifyRecyclerviewTextBean.DatasBean.ClassListBean> classtext_list) {
+        this.classtext_list=classtext_list;
+    }
+
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.parent=parent;
@@ -29,6 +38,7 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
             case 1:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.classify_recyclerview_items, parent, false);
                 holder=new MyClassifyViewholder(view);
+
                 break;
         }
         return holder;
@@ -53,7 +63,7 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
                 break;
             case 1:
                 MyClassifyViewholder myHolder= (MyClassifyViewholder) holder;
-                myHolder.textView.setText("精品男装");
+                myHolder.textView.setText(classtext_list.get(position).getGc_name());
                 MyGridViewAdapter myGridViewAdapter = new MyGridViewAdapter(parent.getContext());
                 myHolder.gridView.setAdapter(myGridViewAdapter);
                 break;
@@ -84,6 +94,6 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemCount() {
-        return 30;
+        return classtext_list.size();
     }
 }
