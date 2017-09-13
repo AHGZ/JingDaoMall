@@ -3,12 +3,14 @@ package com.hgz.test.jingdongmall.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -36,6 +38,7 @@ public class ShoppingTrolleyFragment extends Fragment {
     private MyListviewAdapter myListviewAdapter;
     private ImageView weizhi;
     private TextView heji;
+    private Button jiesuan;
 
     @Nullable
     @Override
@@ -60,6 +63,15 @@ public class ShoppingTrolleyFragment extends Fragment {
                 listView.setAdapter(myListviewAdapter);
                 CalculatedHeightUtil.setListHeight(listView);
                 myListviewAdapter.notifyDataSetChanged();
+                myListviewAdapter.setGetSumPrice(new MyListviewAdapter.GetSumPrice() {
+                    @Override
+                    public void sumprice(int sum, int count) {
+                        heji.setText("合计：¥" + sum + ".00");
+                        jiesuan.setText("去结算"+"("+count+")");
+                    }
+
+                });
+
             }
         });
 
@@ -67,6 +79,22 @@ public class ShoppingTrolleyFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 myListviewAdapter.allSelect();
+                myListviewAdapter.setGetAllSelectSumPrice(new MyListviewAdapter.GetAllSelectSumPrice() {
+                    @Override
+                    public void allSelectSumPrice(int sum, int count) {
+                        heji.setText("合计：¥" + sum + ".00");
+                        jiesuan.setText("去结算"+"("+count+")");
+                    }
+                });
+
+            }
+        });
+        jiesuan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String sumPrice = heji.getText().toString();
+                String counts = jiesuan.getText().toString();
+                showJieSuanDialog("共计："+counts+"个"+","+"总共："+sumPrice+"元");
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -80,13 +108,6 @@ public class ShoppingTrolleyFragment extends Fragment {
             }
         });
 
-        myListviewAdapter.setGetSumPrice(new MyListviewAdapter.GetSumPrice() {
-            @Override
-            public void sumprice(int sum) {
-                heji.setText("合计：¥" + sum + ".00");
-            }
-        });
-
 
     }
 
@@ -96,5 +117,14 @@ public class ShoppingTrolleyFragment extends Fragment {
         allselect = (CheckBox) view.findViewById(R.id.check_allselect);
         weizhi = (ImageView) view.findViewById(R.id.iv_weizhi);
         heji = (TextView) view.findViewById(R.id.tv_heji);
+        jiesuan = (Button) view.findViewById(R.id.btn_jiesuan);
     }
+    private void showJieSuanDialog(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("结算结果");
+        builder.setMessage(message);
+        builder.setPositiveButton("确定", null);
+        builder.create().show();
+    }
+
 }

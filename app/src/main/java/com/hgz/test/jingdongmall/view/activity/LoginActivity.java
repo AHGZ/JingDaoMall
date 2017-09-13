@@ -17,13 +17,17 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgz.test.jingdongmall.R;
+import com.hgz.test.jingdongmall.bean.UserInfoBean;
+import com.hgz.test.jingdongmall.view.dao.MyZhuceDao;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -43,11 +47,17 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private ImageView qq_login;
     private SharedPreferences.Editor edit;
     private int color=0XffD3D3D3;
+    private TextView register;
+    private MyZhuceDao dao;
+    private String username;
+    private String password;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         SharedPreferences sp = getSharedPreferences("qqdata", MODE_PRIVATE);
+        dao = new MyZhuceDao(this);
         edit = sp.edit();
         initView();
         finish.setOnClickListener(this);
@@ -55,6 +65,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         cleanUserName.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
         qq_login.setOnClickListener(this);
+        register.setOnClickListener(this);
     }
 
     private void initView() {
@@ -66,6 +77,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         checkShowOrHide = (CheckBox) findViewById(R.id.check_showorhide);
         btnLogin = (Button) findViewById(R.id.btn_login);
         qq_login = (ImageView) findViewById(R.id.qq_login);
+        register = (TextView) findViewById(R.id.register);
         etUsename.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -184,14 +196,26 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 }
                 break;
             case R.id.btn_login:
+                ArrayList<UserInfoBean> userInfoBeen = dao.selectInfo();
+                for (UserInfoBean info: userInfoBeen) {
+                    username = info.getUsername();
+                    password = info.getPassword();
+                }
                 if (TextUtils.isEmpty(etUsename.getText().toString())||TextUtils.isEmpty(etPassword.getText().toString())){
                     Toast.makeText(this,"账号或密码不能为空，请重新输入",Toast.LENGTH_SHORT).show();
+                }else if(!etUsename.getText().toString().equals(username)||!etPassword.getText().toString().equals(password)){
+                    Toast.makeText(this,"账号或密码输入不正确，请重新输入",Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(this,"登陆成功",Toast.LENGTH_SHORT).show();
+                    finish();
                 }
                 break;
             case R.id.qq_login:
                 UMShareAPI.get(this).getPlatformInfo(LoginActivity.this, SHARE_MEDIA.QQ, umAuthListener);
+                break;
+            case R.id.register:
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
                 break;
         }
     }

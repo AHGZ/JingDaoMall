@@ -65,7 +65,6 @@ public class ClassifyFragment extends QRCodeScanFragment {
 
     private void initData() {
         OkHttpClient okHttpClient = MyApplication.okHttpClient();
-//        OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder().url("http://169.254.254.18/mobile/index.php?act=goods_class").build();
         okHttpClient.newCall(request).enqueue(new Callback() {
 

@@ -23,13 +23,25 @@ public class MyListviewAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<String> list;
     private HashMap<Integer, Boolean> hashMap;
-
+    int pricess=0;
+    int countss=0;
+    int oneprices=0;
     private GetSumPrice getSumPrice;
+    private GetAllSelectSumPrice getAllSelectSumPrice;
+    private TextView price;
+    private TextView count;
+
     public interface GetSumPrice{
-        void sumprice(int sum);
+        void sumprice(int sum,int count);
     }
     public void setGetSumPrice(GetSumPrice getSumPrice){
         this.getSumPrice=getSumPrice;
+    }
+    public interface GetAllSelectSumPrice{
+        void allSelectSumPrice(int sum,int count);
+    }
+    public void setGetAllSelectSumPrice(GetAllSelectSumPrice getAllSelectSumPrice){
+        this.getAllSelectSumPrice=getAllSelectSumPrice;
     }
     public MyListviewAdapter(Context context, ArrayList<String> list) {
         hashMap = new HashMap<>();
@@ -64,24 +76,35 @@ public class MyListviewAdapter extends BaseAdapter {
         ImageView imageView = (ImageView) convertView.findViewById(R.id.listview_image);
         TextView description= (TextView) convertView.findViewById(R.id.listview_description);
         TextView color = (TextView) convertView.findViewById(R.id.listview_color);
-        final TextView price= (TextView) convertView.findViewById(R.id.listview_price);
+        price = (TextView) convertView.findViewById(R.id.listview_price);
         ImageView cutDown = (ImageView) convertView.findViewById(R.id.listview_cut_down);
-        final TextView count = (TextView) convertView.findViewById(R.id.listview_count);
+        count = (TextView) convertView.findViewById(R.id.listview_count);
         ImageView add = (ImageView) convertView.findViewById(R.id.listview_add);
+
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int prices=0;
+
                 hashMap.put(position, !hashMap.get(position));
                 notifyDataSetChanged();
+                int oneprice = Integer.parseInt(price.getText().toString());
+                int counts = Integer.parseInt(count.getText().toString());
+                int prices=0;
+                int countes=0;
                 if (hashMap.get(position)==true){
-                    int oneprice = Integer.parseInt(price.getText().toString());
-                    int counts = Integer.parseInt(count.getText().toString());
-                    prices=oneprice*counts;
+                   prices=pricess+oneprice*counts;
+                    countes=countss+counts;
+                    pricess=prices;
+                    countss=countes;
                     if (getSumPrice!=null){
-                        getSumPrice.sumprice(prices);
+                        getSumPrice.sumprice(prices,countes);
                     }
-
+                }else{
+                    if (getSumPrice!=null){
+                        getSumPrice.sumprice(pricess-oneprice*counts,countss-counts);
+                        countss=countss-counts;
+                        pricess=pricess-oneprice*counts;
+                    }
                 }
 
             }
@@ -91,10 +114,22 @@ public class MyListviewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 int counts = Integer.parseInt(count.getText().toString());
+                int oneprice = Integer.parseInt(price.getText().toString());
+                int prices=0;
                 if (counts>1){
                     count.setText((counts-1)+"");
+                    if (hashMap.get(position)==true){
+                        prices+=oneprice*counts;
+                        if (getSumPrice!=null){
+                            getSumPrice.sumprice(prices,counts);
+                        }
+                    }
+
                 }else{
                     count.setText(1+"");
+                    if (getSumPrice!=null){
+                        getSumPrice.sumprice(prices-oneprice*counts,counts-counts);
+                    }
                 }
 
             }
@@ -104,24 +139,53 @@ public class MyListviewAdapter extends BaseAdapter {
             public void onClick(View v) {
                 int counts = Integer.parseInt(count.getText().toString());
                 count.setText((counts+1)+"");
+                int oneprice = Integer.parseInt(price.getText().toString());
+                int prices=0;
+                if (hashMap.get(position)==true){
+                    prices=pricess+oneprice*counts-oneprice*counts;
+                    pricess=prices;
+                    if (getSumPrice!=null){
+                        getSumPrice.sumprice(prices,counts);
+                    }
+                }else{
+                    if (getSumPrice!=null){
+                        getSumPrice.sumprice(prices-oneprice*counts,counts-counts);
+                    }
+                }
             }
         });
 
         return convertView;
     }
+
+
+
     //全选
     public void allSelect(){
         Set<Map.Entry<Integer, Boolean>> entries = hashMap.entrySet();
         boolean shouldSelectedAll = false;
+        int num=0;
         for (Map.Entry<Integer, Boolean> entry: entries) {
             Boolean value = entry.getValue();
             if (!value){
                 shouldSelectedAll=true;
+
                 break;
             }
+
         }
         for (Map.Entry<Integer, Boolean> entry: entries) {
             entry.setValue(shouldSelectedAll);
+            if (entry.getValue()==true){
+                int oneprice = Integer.parseInt(price.getText().toString());
+                int counts = Integer.parseInt(count.getText().toString());
+                num++;
+                if (getAllSelectSumPrice!=null){
+                    getAllSelectSumPrice.allSelectSumPrice(oneprice*num,num);
+                }
+            }else{
+                getAllSelectSumPrice.allSelectSumPrice(0,0);
+            }
         }
         notifyDataSetChanged();
     }
