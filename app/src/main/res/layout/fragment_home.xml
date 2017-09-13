@@ -128,13 +128,13 @@
             </RadioGroup>
 
         </LinearLayout>
-        <android.support.v7.widget.RecyclerView
+        <com.jcodecraeer.xrecyclerview.XRecyclerView
             android:id="@+id/home_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#F3F3F3">
 
-        </android.support.v7.widget.RecyclerView>
+        </com.jcodecraeer.xrecyclerview.XRecyclerView>
     </LinearLayout>
 
     </ScrollView>

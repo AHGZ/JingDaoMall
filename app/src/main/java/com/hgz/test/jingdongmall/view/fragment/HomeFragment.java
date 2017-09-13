@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,25 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 
+import com.google.gson.Gson;
 import com.hgz.test.jingdongmall.R;
+import com.hgz.test.jingdongmall.app.MyApplication;
+import com.hgz.test.jingdongmall.bean.TuijianBean;
 import com.hgz.test.jingdongmall.view.adapter.MyHomeRecyclerviewAdapter;
 import com.hgz.test.jingdongmall.view.adapter.MyHomeViewPagerAdapter;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.library.zxing.activity.QRCodeScanFragment;
 import com.youth.banner.Banner;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2017/9/6.
@@ -38,8 +49,10 @@ public class HomeFragment extends QRCodeScanFragment {
     private Banner homeBanner2;
     private MyHomeViewPagerAdapter myHomeViewPagerAdapter;
     private LinearLayout homesaoyisao;
-    private RecyclerView recyclerView;
-
+    private XRecyclerView recyclerView;
+    private MyHomeRecyclerviewAdapter myHomeRecyclerviewAdapter;
+    private boolean flag;
+    private int page=1;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,10 +90,27 @@ public class HomeFragment extends QRCodeScanFragment {
                 startScanQRCode();
             }
         });
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        MyHomeRecyclerviewAdapter myHomeRecyclerviewAdapter = new MyHomeRecyclerviewAdapter();
-        recyclerView.setAdapter(myHomeRecyclerviewAdapter);
+        recyclerView.setPullRefreshEnabled(true);
+        recyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
+            @Override
+            public void onRefresh() {
+                page++;
+                flag=true;
+                initNetWorkData();
+                recyclerView.refreshComplete();
+            }
+
+            @Override
+            public void onLoadMore() {
+                page++;
+                flag=false;
+                initNetWorkData();
+                myHomeRecyclerviewAdapter.notifyDataSetChanged();
+                recyclerView.loadMoreComplete();
+
+            }
+        });
+        initNetWorkData();
     }
 
     ScrollView scrollView;
@@ -91,7 +121,7 @@ public class HomeFragment extends QRCodeScanFragment {
         radioGroup = (RadioGroup) view.findViewById(R.id.homeViewpager_radioGroup);
         homeBanner1 = (Banner) view.findViewById(R.id.home_banner);
         homesaoyisao = (LinearLayout) view.findViewById(R.id.homesaoyisao);
-        recyclerView = (RecyclerView) view.findViewById(R.id.home_recyclerview);
+        recyclerView = (XRecyclerView) view.findViewById(R.id.home_recyclerview);
         //设置homeBanner1样式
         homeBanner1.setBannerStyle(Banner.CIRCLE_INDICATOR);
         homeBanner1.setIndicatorGravity(Banner.CENTER);
@@ -133,5 +163,40 @@ public class HomeFragment extends QRCodeScanFragment {
                 "https://img14.360buyimg.com/babel/jfs/t8638/200/1234149431/119735/6c3312d1/59b62500Nbdb53d03.jpg",
                 "https://img10.360buyimg.com/babel/jfs/t8320/150/1227766208/84920/c9c11e2/59b6674eNfa4d8466.jpg",
                 "https://img11.360buyimg.com/babel/jfs/t8899/346/1243045779/95475/1dac304c/59b626bbNeaf14b36.jpg"};
+    }
+    private void initNetWorkData(){
+        OkHttpClient okHttpClient = MyApplication.okHttpClient();
+        Request request=new Request.Builder().url("http://apiv3.yangkeduo.com/v5/newlist?page="+page+"&size=20").build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String json = response.body().string();
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Gson gson = new Gson();
+                        TuijianBean tuijianBean = gson.fromJson(json, TuijianBean.class);
+                        List<TuijianBean.GoodsListBean> goods_list = tuijianBean.getGoods_list();
+                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+                        recyclerView.setLayoutManager(gridLayoutManager);
+                        if (myHomeRecyclerviewAdapter==null){
+                            myHomeRecyclerviewAdapter = new MyHomeRecyclerviewAdapter(getActivity(),goods_list);
+                            recyclerView.setAdapter(myHomeRecyclerviewAdapter);
+                        }else{
+                            myHomeRecyclerviewAdapter.loadMore(goods_list,flag);
+                            myHomeRecyclerviewAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+
+
+            }
+        });
     }
 }

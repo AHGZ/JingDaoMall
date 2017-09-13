@@ -8,10 +8,12 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.hgz.test.jingdongmall.R;
+import com.hgz.test.jingdongmall.bean.TuijianBean;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,7 +23,7 @@ import java.util.Set;
 
 public class MyListviewAdapter extends BaseAdapter {
     private Context context;
-    private ArrayList<String> list;
+    private List<TuijianBean.GoodsListBean> list;
     private HashMap<Integer, Boolean> hashMap;
     int pricess=0;
     int countss=0;
@@ -43,7 +45,7 @@ public class MyListviewAdapter extends BaseAdapter {
     public void setGetAllSelectSumPrice(GetAllSelectSumPrice getAllSelectSumPrice){
         this.getAllSelectSumPrice=getAllSelectSumPrice;
     }
-    public MyListviewAdapter(Context context, ArrayList<String> list) {
+    public MyListviewAdapter(Context context, List<TuijianBean.GoodsListBean> list) {
         hashMap = new HashMap<>();
         this.context = context;
         this.list=list;
@@ -80,6 +82,7 @@ public class MyListviewAdapter extends BaseAdapter {
         ImageView cutDown = (ImageView) convertView.findViewById(R.id.listview_cut_down);
         count = (TextView) convertView.findViewById(R.id.listview_count);
         ImageView add = (ImageView) convertView.findViewById(R.id.listview_add);
+        Glide.with(context).load(list.get(position).getThumb_url()).into(imageView);
 
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override

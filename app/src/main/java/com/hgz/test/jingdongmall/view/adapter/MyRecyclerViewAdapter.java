@@ -8,7 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.hgz.test.jingdongmall.R;
+import com.hgz.test.jingdongmall.bean.TuijianBean;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/9/7.
@@ -16,9 +20,10 @@ import com.hgz.test.jingdongmall.R;
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private FragmentActivity activity;
-
-    public MyRecyclerViewAdapter(FragmentActivity activity) {
+    private List<TuijianBean.GoodsListBean> goods_list;
+    public MyRecyclerViewAdapter(FragmentActivity activity, List<TuijianBean.GoodsListBean> goods_list) {
         this.activity = activity;
+        this.goods_list=goods_list;
     }
 
     @Override
@@ -52,13 +57,13 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         switch (getItemViewType(position)){
             case 0:
                 MyViewHolder holder1= (MyViewHolder) holder;
-                holder1.title1.setText("何国忠何国忠何国忠何国忠何国忠何国忠何国忠");
-                holder1.image1.setImageResource(R.drawable.azz);
+                holder1.title1.setText(goods_list.get(position).getGoods_name());
+                Glide.with(activity).load(goods_list.get(position).getThumb_url()).into(holder1.image1);
                 break;
             case 1:
                 MyViewHolder2 holder2= (MyViewHolder2) holder;
-                holder2.title2.setText("何国忠何国忠何国忠何国忠何国忠何国忠何国忠");
-                holder2.image2.setImageResource(R.drawable.azz);
+                holder2.title2.setText(goods_list.get(position).getGoods_name());
+                Glide.with(activity).load(goods_list.get(position).getThumb_url()).into(holder2.image2);
                 break;
         }
 
@@ -93,6 +98,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return 50;
+        return goods_list.size();
     }
 }

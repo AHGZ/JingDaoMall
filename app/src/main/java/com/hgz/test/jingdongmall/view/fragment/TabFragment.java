@@ -13,8 +13,20 @@ import android.widget.Toast;
 
 import com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayout;
 import com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayoutDirection;
+import com.google.gson.Gson;
 import com.hgz.test.jingdongmall.R;
+import com.hgz.test.jingdongmall.app.MyApplication;
+import com.hgz.test.jingdongmall.bean.TuijianBean;
 import com.hgz.test.jingdongmall.view.adapter.MyRecyclerViewAdapter;
+
+import java.io.IOException;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2017/9/7.
@@ -26,7 +38,7 @@ public class TabFragment extends Fragment{
     private RecyclerView recyclerView;
     private SwipyRefreshLayout recyclerRefresh;
     private Handler handler=null;
-
+    int page=1;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,10 +50,7 @@ public class TabFragment extends Fragment{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(getActivity());
-        recyclerView.setAdapter(myRecyclerViewAdapter);
+        initNetWorkData();
         handler=new Handler();
 
         //设置颜色
@@ -56,6 +65,8 @@ public class TabFragment extends Fragment{
                     @Override
                     public void run() {
                         recyclerRefresh.setRefreshing(false);
+                        page++;
+                        initNetWorkData();
                         Toast.makeText(getActivity(),"加载成功", Toast.LENGTH_SHORT).show();
                     }
                 },2000);
@@ -66,6 +77,8 @@ public class TabFragment extends Fragment{
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        page++;
+                        initNetWorkData();
                         recyclerRefresh.setRefreshing(false);
                         Toast.makeText(getActivity(),"加载成功", Toast.LENGTH_SHORT).show();
                     }
@@ -76,5 +89,35 @@ public class TabFragment extends Fragment{
     private void initView(){
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerRefresh = (SwipyRefreshLayout) view.findViewById(R.id.recyclerRefresh);
+    }
+    private void initNetWorkData() {
+        OkHttpClient okHttpClient = MyApplication.okHttpClient();
+        Request request = new Request.Builder().url("http://apiv3.yangkeduo.com/v5/newlist?page="+page+"&size=20").build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String json = response.body().string();
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Gson gson = new Gson();
+                        TuijianBean tuijianBean = gson.fromJson(json, TuijianBean.class);
+                        List<TuijianBean.GoodsListBean> goods_list = tuijianBean.getGoods_list();
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                        recyclerView.setLayoutManager(linearLayoutManager);
+                        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(getActivity(),goods_list);
+                        recyclerView.setAdapter(myRecyclerViewAdapter);
+                    }
+                });
+
+
+            }
+        });
     }
 }

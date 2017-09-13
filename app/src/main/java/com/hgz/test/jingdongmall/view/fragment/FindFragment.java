@@ -24,7 +24,6 @@ public class FindFragment extends QRCodeScanFragment {
     private ImageView findSaoYiSao;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,4 +51,5 @@ public class FindFragment extends QRCodeScanFragment {
         viewPager = (ViewPager) view.findViewById(R.id.findViewpager);
         findSaoYiSao = (ImageView) view.findViewById(R.id.find_saoyisao);
     }
+
 }

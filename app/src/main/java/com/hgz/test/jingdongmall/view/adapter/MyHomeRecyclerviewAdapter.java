@@ -1,5 +1,6 @@
 package com.hgz.test.jingdongmall.view.adapter;
 
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,7 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.hgz.test.jingdongmall.R;
+import com.hgz.test.jingdongmall.bean.TuijianBean;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/9/10.
@@ -15,12 +20,29 @@ import com.hgz.test.jingdongmall.R;
 
 public class MyHomeRecyclerviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private OnItemsClickListener onItemsClickListener;
-    public interface OnItemsClickListener{
-        void setItemsOnClick(int position);
+//    private OnItemsClickListener onItemsClickListener;
+    private List<TuijianBean.GoodsListBean> goods_list;
+    private FragmentActivity activity;
+    public MyHomeRecyclerviewAdapter(FragmentActivity activity, List<TuijianBean.GoodsListBean> goods_list) {
+        this.goods_list=goods_list;
+        this.activity=activity;
     }
-    public void setOnOnItemsClickListener(OnItemsClickListener onItemsClickListener){
-        this.onItemsClickListener=onItemsClickListener;
+
+//    public interface OnItemsClickListener{
+//        void setItemsOnClick(int position);
+//    }
+//    public void setOnOnItemsClickListener(OnItemsClickListener onItemsClickListener){
+//        this.onItemsClickListener=onItemsClickListener;
+//    }
+    public void loadMore(List<TuijianBean.GoodsListBean> goods_lists,boolean flag){
+        for (TuijianBean.GoodsListBean list: goods_lists) {
+            if (true){
+                goods_list.add(0,list);
+            }else{
+                goods_list.add(list);
+            }
+        }
+
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -32,14 +54,9 @@ public class MyHomeRecyclerviewAdapter extends RecyclerView.Adapter<RecyclerView
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         MyViewHolder myHolder = (MyViewHolder) holder;
-        myHolder.description.setText("何国忠何国忠何国忠何国忠何国忠何国忠何国忠");
-        myHolder.price.setText("¥50.00");
-        myHolder.icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemsClickListener.setItemsOnClick(position);
-            }
-        });
+        myHolder.description.setText(goods_list.get(position).getGoods_name());
+        myHolder.price.setText("¥"+goods_list.get(position).getNormal_price());
+        Glide.with(activity).load(goods_list.get(position).getThumb_url()).into(myHolder.image);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -59,7 +76,7 @@ public class MyHomeRecyclerviewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public int getItemCount() {
-        return 20;
+        return goods_list.size();
     }
 
 }
