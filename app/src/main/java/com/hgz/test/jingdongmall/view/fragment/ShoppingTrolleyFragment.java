@@ -24,12 +24,14 @@ import com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayoutDirection;
 import com.google.gson.Gson;
 import com.hgz.test.jingdongmall.R;
 import com.hgz.test.jingdongmall.app.MyApplication;
+import com.hgz.test.jingdongmall.bean.ListViewBean;
 import com.hgz.test.jingdongmall.bean.TuijianBean;
 import com.hgz.test.jingdongmall.view.adapter.MyListviewAdapter;
 import com.hgz.test.jingdongmall.view.adapter.MyShoppingRecyclerviewAdapter;
 import com.hgz.test.jingdongmall.view.utils.CalculatedHeightUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -48,7 +50,7 @@ public class ShoppingTrolleyFragment extends Fragment {
     private RecyclerView recyclerView;
     private ListView listView;
     private CheckBox allselect;
-    List<TuijianBean.GoodsListBean> goods_lists;
+    private List<ListViewBean> lists= new ArrayList<>();
     private MyListviewAdapter myListviewAdapter;
     private ImageView weizhi;
     private TextView heji;
@@ -62,6 +64,7 @@ public class ShoppingTrolleyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_shopping_trolley, container, false);
+
         return view;
     }
 
@@ -128,7 +131,7 @@ public class ShoppingTrolleyFragment extends Fragment {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                goods_lists.remove(position);
+                lists.remove(position);
                 listView.setAdapter(myListviewAdapter);
                 myListviewAdapter.notifyDataSetChanged();
                 CalculatedHeightUtil.setListHeight(listView);
@@ -183,9 +186,9 @@ public class ShoppingTrolleyFragment extends Fragment {
                         myShoppingRecyclerviewAdapter.setOnOnItemsClickListener(new MyShoppingRecyclerviewAdapter.OnItemsClickListener() {
                             @Override
                             public void setItemsOnClick(int position) {
-                                TuijianBean.GoodsListBean goodsListBean = new TuijianBean.GoodsListBean();
-                                goods_lists.add(position,goodsListBean);
-                                myListviewAdapter = new MyListviewAdapter(getContext(), goods_lists);
+                                ListViewBean listViewBean = new ListViewBean(goods_list.get(position).getThumb_url(), goods_list.get(position).getNormal_price(), goods_list.get(position).getGoods_name());
+                                lists.add(listViewBean);
+                                myListviewAdapter = new MyListviewAdapter(getContext(), lists);
                                 listView.setAdapter(myListviewAdapter);
                                 CalculatedHeightUtil.setListHeight(listView);
                                 myListviewAdapter.notifyDataSetChanged();

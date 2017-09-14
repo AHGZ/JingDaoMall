@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hgz.test.jingdongmall.R;
-import com.hgz.test.jingdongmall.bean.TuijianBean;
+import com.hgz.test.jingdongmall.bean.ListViewBean;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.Set;
 
 public class MyListviewAdapter extends BaseAdapter {
     private Context context;
-    private List<TuijianBean.GoodsListBean> list;
+    private List<ListViewBean> list;
     private HashMap<Integer, Boolean> hashMap;
     int pricess=0;
     int countss=0;
@@ -45,7 +45,7 @@ public class MyListviewAdapter extends BaseAdapter {
     public void setGetAllSelectSumPrice(GetAllSelectSumPrice getAllSelectSumPrice){
         this.getAllSelectSumPrice=getAllSelectSumPrice;
     }
-    public MyListviewAdapter(Context context, List<TuijianBean.GoodsListBean> list) {
+    public MyListviewAdapter(Context context, List<ListViewBean> list) {
         hashMap = new HashMap<>();
         this.context = context;
         this.list=list;
@@ -82,7 +82,9 @@ public class MyListviewAdapter extends BaseAdapter {
         ImageView cutDown = (ImageView) convertView.findViewById(R.id.listview_cut_down);
         count = (TextView) convertView.findViewById(R.id.listview_count);
         ImageView add = (ImageView) convertView.findViewById(R.id.listview_add);
-        Glide.with(context).load(list.get(position).getThumb_url()).into(imageView);
+        description.setText(list.get(position).getTitle());
+        price.setText(list.get(position).getPrice()+"");
+        Glide.with(context).load(list.get(position).getImageurl()).into(imageView);
 
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,18 +123,18 @@ public class MyListviewAdapter extends BaseAdapter {
                 int prices=0;
                 if (counts>1){
                     count.setText((counts-1)+"");
-                    if (hashMap.get(position)==true){
-                        prices+=oneprice*counts;
-                        if (getSumPrice!=null){
-                            getSumPrice.sumprice(prices,counts);
-                        }
-                    }
-
-                }else{
-                    count.setText(1+"");
-                    if (getSumPrice!=null){
-                        getSumPrice.sumprice(prices-oneprice*counts,counts-counts);
-                    }
+//                    if (hashMap.get(position)==true){
+//                        prices+=oneprice*counts;
+//                        if (getSumPrice!=null){
+//                            getSumPrice.sumprice(prices,counts);
+//                        }
+//                    }
+//
+//                }else{
+//                    count.setText(1+"");
+//                    if (getSumPrice!=null){
+//                        getSumPrice.sumprice(prices-oneprice*counts,counts-counts);
+//                    }
                 }
 
             }
@@ -142,19 +144,19 @@ public class MyListviewAdapter extends BaseAdapter {
             public void onClick(View v) {
                 int counts = Integer.parseInt(count.getText().toString());
                 count.setText((counts+1)+"");
-                int oneprice = Integer.parseInt(price.getText().toString());
-                int prices=0;
-                if (hashMap.get(position)==true){
-                    prices=pricess+oneprice*counts-oneprice*counts;
-                    pricess=prices;
-                    if (getSumPrice!=null){
-                        getSumPrice.sumprice(prices,counts);
-                    }
-                }else{
-                    if (getSumPrice!=null){
-                        getSumPrice.sumprice(prices-oneprice*counts,counts-counts);
-                    }
-                }
+//                int oneprice = Integer.parseInt(price.getText().toString());
+//                int prices=0;
+//                if (hashMap.get(position)==true){
+//                    prices=pricess+oneprice*counts-oneprice*counts;
+//                    pricess=prices;
+//                    if (getSumPrice!=null){
+//                        getSumPrice.sumprice(prices,counts);
+//                    }
+//                }else{
+//                    if (getSumPrice!=null){
+//                        getSumPrice.sumprice(prices-oneprice*counts,counts-counts);
+//                    }
+//                }
             }
         });
 

@@ -1,10 +1,12 @@
 package com.hgz.test.jingdongmall.view.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
+import com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayout;
+import com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayoutDirection;
 import com.google.gson.Gson;
 import com.hgz.test.jingdongmall.R;
 import com.hgz.test.jingdongmall.app.MyApplication;
 import com.hgz.test.jingdongmall.bean.TuijianBean;
 import com.hgz.test.jingdongmall.view.adapter.MyHomeRecyclerviewAdapter;
 import com.hgz.test.jingdongmall.view.adapter.MyHomeViewPagerAdapter;
-import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.library.zxing.activity.QRCodeScanFragment;
 import com.youth.banner.Banner;
 
@@ -49,10 +53,13 @@ public class HomeFragment extends QRCodeScanFragment {
     private Banner homeBanner2;
     private MyHomeViewPagerAdapter myHomeViewPagerAdapter;
     private LinearLayout homesaoyisao;
-    private XRecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private MyHomeRecyclerviewAdapter myHomeRecyclerviewAdapter;
     private boolean flag;
-    private int page=1;
+    private int page = 1;
+    private SwipyRefreshLayout swipyRefreshLayout;
+    private Handler handler = null;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,6 +70,7 @@ public class HomeFragment extends QRCodeScanFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        handler = new Handler();
         initData();
         initView();
         myHomeViewPagerAdapter = new MyHomeViewPagerAdapter(getActivity().getSupportFragmentManager(), views);
@@ -90,27 +98,38 @@ public class HomeFragment extends QRCodeScanFragment {
                 startScanQRCode();
             }
         });
-        recyclerView.setPullRefreshEnabled(true);
-        recyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
+        initNetWorkData();
+        swipyRefreshLayout.setDirection(SwipyRefreshLayoutDirection.BOTH);
+        swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh() {
-                page++;
-                flag=true;
-                initNetWorkData();
-                recyclerView.refreshComplete();
+            public void onRefresh(int index) {
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        page++;
+                        initNetWorkData();
+                        swipyRefreshLayout.setRefreshing(false);
+                        Toast.makeText(getActivity(), "加载成功", Toast.LENGTH_SHORT).show();
+                    }
+                }, 2000);
             }
 
             @Override
-            public void onLoadMore() {
-                page++;
-                flag=false;
-                initNetWorkData();
-                myHomeRecyclerviewAdapter.notifyDataSetChanged();
-                recyclerView.loadMoreComplete();
-
+            public void onLoad(int index) {
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        page++;
+                        initNetWorkData();
+                        swipyRefreshLayout.setRefreshing(false);
+                        Toast.makeText(getActivity(), "加载成功", Toast.LENGTH_SHORT).show();
+                    }
+                }, 2000);
             }
         });
-        initNetWorkData();
+
     }
 
     ScrollView scrollView;
@@ -121,7 +140,8 @@ public class HomeFragment extends QRCodeScanFragment {
         radioGroup = (RadioGroup) view.findViewById(R.id.homeViewpager_radioGroup);
         homeBanner1 = (Banner) view.findViewById(R.id.home_banner);
         homesaoyisao = (LinearLayout) view.findViewById(R.id.homesaoyisao);
-        recyclerView = (XRecyclerView) view.findViewById(R.id.home_recyclerview);
+        recyclerView = (RecyclerView) view.findViewById(R.id.home_recyclerview);
+        swipyRefreshLayout = (SwipyRefreshLayout) view.findViewById(R.id.home_refresh);
         //设置homeBanner1样式
         homeBanner1.setBannerStyle(Banner.CIRCLE_INDICATOR);
         homeBanner1.setIndicatorGravity(Banner.CENTER);
@@ -164,9 +184,10 @@ public class HomeFragment extends QRCodeScanFragment {
                 "https://img10.360buyimg.com/babel/jfs/t8320/150/1227766208/84920/c9c11e2/59b6674eNfa4d8466.jpg",
                 "https://img11.360buyimg.com/babel/jfs/t8899/346/1243045779/95475/1dac304c/59b626bbNeaf14b36.jpg"};
     }
-    private void initNetWorkData(){
+
+    private void initNetWorkData() {
         OkHttpClient okHttpClient = MyApplication.okHttpClient();
-        Request request=new Request.Builder().url("http://apiv3.yangkeduo.com/v5/newlist?page="+page+"&size=20").build();
+        Request request = new Request.Builder().url("http://apiv3.yangkeduo.com/v5/newlist?page=" + page + "&size=20").build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -185,11 +206,11 @@ public class HomeFragment extends QRCodeScanFragment {
                         List<TuijianBean.GoodsListBean> goods_list = tuijianBean.getGoods_list();
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
                         recyclerView.setLayoutManager(gridLayoutManager);
-                        if (myHomeRecyclerviewAdapter==null){
-                            myHomeRecyclerviewAdapter = new MyHomeRecyclerviewAdapter(getActivity(),goods_list);
+                        if (myHomeRecyclerviewAdapter == null) {
+                            myHomeRecyclerviewAdapter = new MyHomeRecyclerviewAdapter(getActivity(), goods_list);
                             recyclerView.setAdapter(myHomeRecyclerviewAdapter);
-                        }else{
-                            myHomeRecyclerviewAdapter.loadMore(goods_list,flag);
+                        } else {
+                            myHomeRecyclerviewAdapter.loadMore(goods_list, flag);
                             myHomeRecyclerviewAdapter.notifyDataSetChanged();
                         }
                     }

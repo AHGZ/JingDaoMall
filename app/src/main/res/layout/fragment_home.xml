@@ -84,58 +84,73 @@
 
     </LinearLayout>
 
-    <ScrollView
-        android:scrollY="0dp"
-        android:id="@+id/pull_refresh_scroll"
+    <com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayout
+        android:id="@+id/home_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <com.youth.banner.Banner xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/home_banner"
-            android:layout_width="match_parent"
-            android:layout_height="180dp" />
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/pull_refresh_scroll"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:background="@drawable/tupian"
-            android:orientation="vertical">
-            <android.support.v4.view.ViewPager
-                android:id="@+id/homeViewpager"
+            android:layout_height="match_parent"
+            android:scrollY="0dp"
+            android:scrollbars="none">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="175dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            </android.support.v4.view.ViewPager>
+                <com.youth.banner.Banner xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/home_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp" />
 
-            <RadioGroup
-                android:id="@+id/homeViewpager_radioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:background="@drawable/tupian"
+                    android:orientation="vertical">
 
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/homeViewpager"
+                        android:layout_width="match_parent"
+                        android:layout_height="175dp">
 
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </RadioGroup>
+                    </android.support.v4.view.ViewPager>
 
-        </LinearLayout>
-        <com.jcodecraeer.xrecyclerview.XRecyclerView
-            android:id="@+id/home_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#F3F3F3">
+                    <RadioGroup
+                        android:id="@+id/homeViewpager_radioGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
-        </com.jcodecraeer.xrecyclerview.XRecyclerView>
-    </LinearLayout>
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
-    </ScrollView>
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </RadioGroup>
+
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/bk1"
+                    android:scaleType="fitXY"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/home_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#F3F3F3">
+
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
+        </ScrollView>
+    </com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayout>
+
 </LinearLayout>
