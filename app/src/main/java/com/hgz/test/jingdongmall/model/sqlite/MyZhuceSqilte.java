@@ -1,4 +1,4 @@
-package com.hgz.test.jingdongmall.view.sqlite;
+package com.hgz.test.jingdongmall.model.sqlite;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

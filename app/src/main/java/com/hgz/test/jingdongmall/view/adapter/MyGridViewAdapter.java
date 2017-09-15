@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hgz.test.jingdongmall.R;
-import com.hgz.test.jingdongmall.bean.ClassifyGridViewBean;
+import com.hgz.test.jingdongmall.model.bean.ClassifyGridViewBean;
 
 import java.util.List;
 

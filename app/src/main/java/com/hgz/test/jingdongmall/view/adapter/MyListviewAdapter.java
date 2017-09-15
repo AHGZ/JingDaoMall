@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hgz.test.jingdongmall.R;
-import com.hgz.test.jingdongmall.bean.ListViewBean;
+import com.hgz.test.jingdongmall.model.bean.ListViewBean;
 
 import java.util.HashMap;
 import java.util.List;

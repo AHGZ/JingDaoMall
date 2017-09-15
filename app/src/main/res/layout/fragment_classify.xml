@@ -82,7 +82,7 @@
             app:indicator_color="#F3F5F7"
             app:indicator_gravity="fill"
             app:tab_mode="scrollable"
-            app:tab_height="50dp">
+            app:tab_height="60dp">
 
         </q.rorbin.verticaltablayout.VerticalTabLayout>
         <LinearLayout

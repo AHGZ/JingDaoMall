@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hgz.test.jingdongmall.R;
-import com.hgz.test.jingdongmall.bean.TuijianBean;
+import com.hgz.test.jingdongmall.model.bean.TuijianBean;
 
 import java.util.List;
 

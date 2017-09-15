@@ -21,8 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hgz.test.jingdongmall.R;
-import com.hgz.test.jingdongmall.bean.UserInfoBean;
-import com.hgz.test.jingdongmall.view.dao.MyZhuceDao;
+import com.hgz.test.jingdongmall.model.bean.UserInfoBean;
+import com.hgz.test.jingdongmall.model.dao.MyZhuceDao;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -66,6 +66,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         btnLogin.setOnClickListener(this);
         qq_login.setOnClickListener(this);
         register.setOnClickListener(this);
+
     }
 
     private void initView() {

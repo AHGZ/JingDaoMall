@@ -1,5 +1,6 @@
 package com.hgz.test.jingdongmall.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -21,30 +22,23 @@ import android.widget.Toast;
 
 import com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayout;
 import com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayoutDirection;
-import com.google.gson.Gson;
 import com.hgz.test.jingdongmall.R;
-import com.hgz.test.jingdongmall.app.MyApplication;
-import com.hgz.test.jingdongmall.bean.ListViewBean;
-import com.hgz.test.jingdongmall.bean.TuijianBean;
+import com.hgz.test.jingdongmall.model.bean.ListViewBean;
+import com.hgz.test.jingdongmall.model.bean.TuijianBean;
+import com.hgz.test.jingdongmall.presenter.GetShoppingNetworkDataPresenter;
+import com.hgz.test.jingdongmall.view.IView.IGetHomeNetworkDataView;
 import com.hgz.test.jingdongmall.view.adapter.MyListviewAdapter;
 import com.hgz.test.jingdongmall.view.adapter.MyShoppingRecyclerviewAdapter;
-import com.hgz.test.jingdongmall.view.utils.CalculatedHeightUtil;
+import com.hgz.test.jingdongmall.utils.CalculatedHeightUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by Administrator on 2017/9/6.
  */
 
-public class ShoppingTrolleyFragment extends Fragment {
+public class ShoppingTrolleyFragment extends Fragment implements IGetHomeNetworkDataView{
 
     private View view;
     private RecyclerView recyclerView;
@@ -59,6 +53,7 @@ public class ShoppingTrolleyFragment extends Fragment {
     private Handler handler = null;
     int page = 1;
     private MyShoppingRecyclerviewAdapter myShoppingRecyclerviewAdapter;
+    private GetShoppingNetworkDataPresenter getShoppingNetworkDataPresenter;
 
     @Nullable
     @Override
@@ -72,7 +67,8 @@ public class ShoppingTrolleyFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        initNetWorkData();
+        getShoppingNetworkDataPresenter = new GetShoppingNetworkDataPresenter(this);
+        getShoppingNetworkDataPresenter.getShouYeNetworkData();
         handler = new Handler();
         refreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark, android.R.color.holo_red_dark);
         refreshLayout.setDirection(SwipyRefreshLayoutDirection.BOTH);
@@ -83,8 +79,7 @@ public class ShoppingTrolleyFragment extends Fragment {
                     @Override
                     public void run() {
                         refreshLayout.setRefreshing(false);
-                        page++;
-                        initNetWorkData();
+                        getShoppingNetworkDataPresenter.getShouYeNetworkData();
                         Toast.makeText(getActivity(), "加载成功", Toast.LENGTH_SHORT).show();
                     }
                 }, 2000);
@@ -95,9 +90,8 @@ public class ShoppingTrolleyFragment extends Fragment {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        initNetWorkData();
                         refreshLayout.setRefreshing(false);
+                        getShoppingNetworkDataPresenter.getShouYeNetworkData();
                         Toast.makeText(getActivity(), "加载成功", Toast.LENGTH_SHORT).show();
                     }
                 }, 2000);
@@ -160,54 +154,47 @@ public class ShoppingTrolleyFragment extends Fragment {
         builder.create().show();
     }
 
-    private void initNetWorkData() {
-        OkHttpClient okHttpClient = MyApplication.okHttpClient();
-        Request request = new Request.Builder().url("http://apiv3.yangkeduo.com/v5/newlist?page="+page+"&size=20").build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
+    @Override
+    public Context context() {
+        return getActivity();
+    }
+
+    @Override
+    public void onGetNetWorkDateSucced(final TuijianBean dataBean) {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String json = response.body().string();
-
-                getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                final List<TuijianBean.GoodsListBean> goods_list = dataBean.getGoods_list();
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+                recyclerView.setLayoutManager(gridLayoutManager);
+                myShoppingRecyclerviewAdapter = new MyShoppingRecyclerviewAdapter(getActivity(), goods_list);
+                recyclerView.setAdapter(myShoppingRecyclerviewAdapter);
+                myShoppingRecyclerviewAdapter.setOnOnItemsClickListener(new MyShoppingRecyclerviewAdapter.OnItemsClickListener() {
                     @Override
-                    public void run() {
-                        Gson gson = new Gson();
-                        TuijianBean tuijianBean = gson.fromJson(json, TuijianBean.class);
-                        final List<TuijianBean.GoodsListBean> goods_list = tuijianBean.getGoods_list();
-                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-                        recyclerView.setLayoutManager(gridLayoutManager);
-                        myShoppingRecyclerviewAdapter = new MyShoppingRecyclerviewAdapter(getActivity(), goods_list);
-                        recyclerView.setAdapter(myShoppingRecyclerviewAdapter);
-                        myShoppingRecyclerviewAdapter.setOnOnItemsClickListener(new MyShoppingRecyclerviewAdapter.OnItemsClickListener() {
+                    public void setItemsOnClick(int position) {
+                        ListViewBean listViewBean = new ListViewBean(goods_list.get(position).getThumb_url(), goods_list.get(position).getNormal_price(), goods_list.get(position).getGoods_name());
+                        lists.add(listViewBean);
+                        myListviewAdapter = new MyListviewAdapter(getContext(), lists);
+                        listView.setAdapter(myListviewAdapter);
+                        CalculatedHeightUtil.setListHeight(listView);
+                        myListviewAdapter.notifyDataSetChanged();
+                        myListviewAdapter.setGetSumPrice(new MyListviewAdapter.GetSumPrice() {
                             @Override
-                            public void setItemsOnClick(int position) {
-                                ListViewBean listViewBean = new ListViewBean(goods_list.get(position).getThumb_url(), goods_list.get(position).getNormal_price(), goods_list.get(position).getGoods_name());
-                                lists.add(listViewBean);
-                                myListviewAdapter = new MyListviewAdapter(getContext(), lists);
-                                listView.setAdapter(myListviewAdapter);
-                                CalculatedHeightUtil.setListHeight(listView);
-                                myListviewAdapter.notifyDataSetChanged();
-                                myListviewAdapter.setGetSumPrice(new MyListviewAdapter.GetSumPrice() {
-                                    @Override
-                                    public void sumprice(int sum, int count) {
-                                        heji.setText("合计：¥" + sum + ".00");
-                                        jiesuan.setText("去结算" + "(" + count + ")");
-                                    }
-
-                                });
-
+                            public void sumprice(int sum, int count) {
+                                heji.setText("合计：¥" + sum + ".00");
+                                jiesuan.setText("去结算" + "(" + count + ")");
                             }
+
                         });
+
                     }
                 });
-
-
             }
         });
+    }
+
+    @Override
+    public void onGetNetWorkDataFaild(String exception) {
+
     }
 }

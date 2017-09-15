@@ -1,4 +1,4 @@
-package com.hgz.test.jingdongmall.bean;
+package com.hgz.test.jingdongmall.model.bean;
 
 import java.util.List;
 
@@ -6,11 +6,11 @@ import java.util.List;
  * Created by Administrator on 2017/9/12.
  */
 
-public class ClassifyGridViewBean {
+public class ClassifyRecyclerviewTextBean {
 
     /**
      * code : 200
-     * datas : {"class_list":[{"gc_id":"12","gc_name":"T恤"},{"gc_id":"13","gc_name":"衬衫"},{"gc_id":"14","gc_name":"针织衫"},{"gc_id":"15","gc_name":"雪纺衫"},{"gc_id":"16","gc_name":"卫衣"},{"gc_id":"17","gc_name":"马甲"},{"gc_id":"18","gc_name":"连衣裙"},{"gc_id":"19","gc_name":"半身裙"},{"gc_id":"20","gc_name":"牛仔裤"},{"gc_id":"21","gc_name":"休闲裤"},{"gc_id":"22","gc_name":"打底裤"},{"gc_id":"23","gc_name":"正装裤"},{"gc_id":"24","gc_name":"西服"},{"gc_id":"25","gc_name":"短外套"},{"gc_id":"26","gc_name":"风衣"},{"gc_id":"27","gc_name":"大衣"},{"gc_id":"28","gc_name":"皮衣皮草"},{"gc_id":"29","gc_name":"棉服"},{"gc_id":"30","gc_name":"羽绒服"},{"gc_id":"31","gc_name":"孕妇装"},{"gc_id":"32","gc_name":"大码装"},{"gc_id":"33","gc_name":"中老年装"},{"gc_id":"34","gc_name":"婚纱礼服"},{"gc_id":"1053","gc_name":"女装"}]}
+     * datas : {"class_list":[{"gc_id":"4","gc_name":"女装"},{"gc_id":"5","gc_name":"男装"},{"gc_id":"6","gc_name":"内衣"},{"gc_id":"7","gc_name":"运动"},{"gc_id":"8","gc_name":"女鞋"},{"gc_id":"9","gc_name":"男鞋"},{"gc_id":"10","gc_name":"配饰"},{"gc_id":"11","gc_name":"童装"}]}
      */
 
     private int code;
@@ -45,8 +45,8 @@ public class ClassifyGridViewBean {
 
         public static class ClassListBean {
             /**
-             * gc_id : 12
-             * gc_name : T恤
+             * gc_id : 4
+             * gc_name : 女装
              */
 
             private String gc_id;

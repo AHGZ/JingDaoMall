@@ -1,4 +1,4 @@
-package com.hgz.test.jingdongmall.view.utils;
+package com.hgz.test.jingdongmall.utils;
 
 import android.view.View;
 import android.view.ViewGroup;

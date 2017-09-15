@@ -14,7 +14,7 @@ import okhttp3.OkHttpClient;
  */
 
 public class MyApplication extends Application{
-    private static Context appcontext;
+    private static Context appContext;
     private static OkHttpClient okHttpClient;
 
     {
@@ -23,13 +23,13 @@ public class MyApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        appcontext=this;
+        appContext=this;
         UMShareAPI.get(this);
         okHttpClient = new OkHttpClient();
         CrashReport.initCrashReport(getApplicationContext(), "a5728f5d1c", true);//建议在测试阶段建议设置成true，发布时设置为false
     }
     public static Context context(){
-        return  appcontext;
+        return  appContext;
     }
     public static OkHttpClient okHttpClient(){
         return okHttpClient;

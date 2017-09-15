@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="3"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        >
 
     </com.hgz.test.jingdongmall.view.customview.MyGridView>
 </LinearLayout>

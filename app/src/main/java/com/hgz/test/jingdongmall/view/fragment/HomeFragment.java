@@ -1,5 +1,6 @@
 package com.hgz.test.jingdongmall.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -18,30 +19,23 @@ import android.widget.Toast;
 
 import com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayout;
 import com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayoutDirection;
-import com.google.gson.Gson;
 import com.hgz.test.jingdongmall.R;
-import com.hgz.test.jingdongmall.app.MyApplication;
-import com.hgz.test.jingdongmall.bean.TuijianBean;
+import com.hgz.test.jingdongmall.model.bean.TuijianBean;
+import com.hgz.test.jingdongmall.presenter.GetHomeNetworkDataPresenter;
+import com.hgz.test.jingdongmall.view.IView.IGetHomeNetworkDataView;
 import com.hgz.test.jingdongmall.view.adapter.MyHomeRecyclerviewAdapter;
 import com.hgz.test.jingdongmall.view.adapter.MyHomeViewPagerAdapter;
 import com.library.zxing.activity.QRCodeScanFragment;
 import com.youth.banner.Banner;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by Administrator on 2017/9/6.
  */
 
-public class HomeFragment extends QRCodeScanFragment {
+public class HomeFragment extends QRCodeScanFragment implements IGetHomeNetworkDataView {
 
     private View view;
     private ArrayList<Integer> imageViews;
@@ -56,9 +50,9 @@ public class HomeFragment extends QRCodeScanFragment {
     private RecyclerView recyclerView;
     private MyHomeRecyclerviewAdapter myHomeRecyclerviewAdapter;
     private boolean flag;
-    private int page = 1;
     private SwipyRefreshLayout swipyRefreshLayout;
     private Handler handler = null;
+    private GetHomeNetworkDataPresenter getShouyeNetworkDataPresenter;
 
     @Nullable
     @Override
@@ -98,7 +92,9 @@ public class HomeFragment extends QRCodeScanFragment {
                 startScanQRCode();
             }
         });
-        initNetWorkData();
+        getShouyeNetworkDataPresenter = new GetHomeNetworkDataPresenter(this);
+        getShouyeNetworkDataPresenter.getShouYeNetworkData();
+//        initNetWorkData();
         swipyRefreshLayout.setDirection(SwipyRefreshLayoutDirection.BOTH);
         swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
@@ -107,9 +103,8 @@ public class HomeFragment extends QRCodeScanFragment {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
-                        page++;
-                        initNetWorkData();
+                        getShouyeNetworkDataPresenter.getShouYeNetworkData();
+//                        initNetWorkData();
                         swipyRefreshLayout.setRefreshing(false);
                         Toast.makeText(getActivity(), "加载成功", Toast.LENGTH_SHORT).show();
                     }
@@ -121,8 +116,8 @@ public class HomeFragment extends QRCodeScanFragment {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        page++;
-                        initNetWorkData();
+                        getShouyeNetworkDataPresenter.getShouYeNetworkData();
+//                        initNetWorkData();
                         swipyRefreshLayout.setRefreshing(false);
                         Toast.makeText(getActivity(), "加载成功", Toast.LENGTH_SHORT).show();
                     }
@@ -185,39 +180,32 @@ public class HomeFragment extends QRCodeScanFragment {
                 "https://img11.360buyimg.com/babel/jfs/t8899/346/1243045779/95475/1dac304c/59b626bbNeaf14b36.jpg"};
     }
 
-    private void initNetWorkData() {
-        OkHttpClient okHttpClient = MyApplication.okHttpClient();
-        Request request = new Request.Builder().url("http://apiv3.yangkeduo.com/v5/newlist?page=" + page + "&size=20").build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
+    @Override
+    public Context context() {
+        return getActivity();
+    }
+
+    @Override
+    public void onGetNetWorkDateSucced(final TuijianBean dataBean) {
+       getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String json = response.body().string();
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Gson gson = new Gson();
-                        TuijianBean tuijianBean = gson.fromJson(json, TuijianBean.class);
-                        List<TuijianBean.GoodsListBean> goods_list = tuijianBean.getGoods_list();
-                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-                        recyclerView.setLayoutManager(gridLayoutManager);
-                        if (myHomeRecyclerviewAdapter == null) {
-                            myHomeRecyclerviewAdapter = new MyHomeRecyclerviewAdapter(getActivity(), goods_list);
-                            recyclerView.setAdapter(myHomeRecyclerviewAdapter);
-                        } else {
-                            myHomeRecyclerviewAdapter.loadMore(goods_list, flag);
-                            myHomeRecyclerviewAdapter.notifyDataSetChanged();
-                        }
-                    }
-                });
-
-
+            public void run() {
+                List<TuijianBean.GoodsListBean> goods_list = dataBean.getGoods_list();
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+                recyclerView.setLayoutManager(gridLayoutManager);
+                if (myHomeRecyclerviewAdapter == null) {
+                    myHomeRecyclerviewAdapter = new MyHomeRecyclerviewAdapter(getActivity(), goods_list);
+                    recyclerView.setAdapter(myHomeRecyclerviewAdapter);
+                } else {
+                    myHomeRecyclerviewAdapter.loadMore(goods_list, flag);
+                    myHomeRecyclerviewAdapter.notifyDataSetChanged();
+                }
             }
         });
+    }
+
+    @Override
+    public void onGetNetWorkDataFaild(String exception) {
+
     }
 }

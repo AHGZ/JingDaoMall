@@ -1,4 +1,4 @@
-package com.hgz.test.jingdongmall.bean;
+package com.hgz.test.jingdongmall.model.bean;
 
 import java.util.List;
 

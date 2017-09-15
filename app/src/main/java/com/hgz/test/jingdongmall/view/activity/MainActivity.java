@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (index == 0) {
             ((HomeFragment) fragments[index]).scrollScrollView();
         }
-
         ft.commit();
         //再次赋值
         mIndex = index;

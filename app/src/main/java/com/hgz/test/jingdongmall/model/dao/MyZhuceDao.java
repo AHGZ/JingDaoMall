@@ -1,12 +1,12 @@
-package com.hgz.test.jingdongmall.view.dao;
+package com.hgz.test.jingdongmall.model.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.hgz.test.jingdongmall.bean.UserInfoBean;
-import com.hgz.test.jingdongmall.view.sqlite.MyZhuceSqilte;
+import com.hgz.test.jingdongmall.model.bean.UserInfoBean;
+import com.hgz.test.jingdongmall.model.sqlite.MyZhuceSqilte;
 
 import java.util.ArrayList;
 

@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.hgz.test.jingdongmall.bean.ClassifyTablayoutBean;
+import com.hgz.test.jingdongmall.model.bean.ClassifyTablayoutBean;
 import com.hgz.test.jingdongmall.view.fragment.ClassifyViewPagerFragment;
 
 import java.util.List;
@@ -37,6 +37,7 @@ public class MyClassifyViewpagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
+
         return titles.get(position).getGc_name();
     }
 }

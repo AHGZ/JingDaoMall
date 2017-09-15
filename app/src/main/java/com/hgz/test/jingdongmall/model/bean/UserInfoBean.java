@@ -1,4 +1,4 @@
-package com.hgz.test.jingdongmall.bean;
+package com.hgz.test.jingdongmall.model.bean;
 
 /**
  * Created by Administrator on 2017/9/13.

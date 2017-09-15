@@ -14,7 +14,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:src="@drawable/lingliuliang" />
+            android:src="@drawable/jingdongjingxuan" />
 
         <ImageView
             android:layout_width="0dp"
@@ -26,19 +26,19 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:src="@drawable/jipiao" />
+            android:src="@drawable/jipiaohuochepiao" />
 
         <ImageView
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:src="@drawable/weshouyoupin" />
+            android:src="@drawable/qiye" />
 
         <ImageView
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:src="@drawable/jingdongshiyong" />
+            android:src="@drawable/lvyou" />
     </LinearLayout>
 
     <LinearLayout
@@ -109,7 +109,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:src="@drawable/jingdonghuishou" />
+            android:src="@drawable/wodeguanzhuu" />
 
         <ImageView
             android:layout_width="0dp"
@@ -121,7 +121,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-            android:src="@drawable/wuerma" />
+            android:src="@drawable/aoerma" />
 
         <ImageView
             android:layout_width="0dp"

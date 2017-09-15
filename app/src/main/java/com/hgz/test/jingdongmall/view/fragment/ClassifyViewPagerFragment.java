@@ -1,5 +1,6 @@
 package com.hgz.test.jingdongmall.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,7 +13,9 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 import com.hgz.test.jingdongmall.R;
 import com.hgz.test.jingdongmall.app.MyApplication;
-import com.hgz.test.jingdongmall.bean.ClassifyRecyclerviewTextBean;
+import com.hgz.test.jingdongmall.model.bean.ClassifyRecyclerviewTextBean;
+import com.hgz.test.jingdongmall.presenter.GetClassifyRecyclerviewTextNetworkDataPresenter;
+import com.hgz.test.jingdongmall.view.IView.IGetClassifyRecyclerviewTextNetworkDataView;
 import com.hgz.test.jingdongmall.view.adapter.MyClassifyRecyclerAdapter;
 
 import java.io.IOException;
@@ -28,7 +31,7 @@ import okhttp3.Response;
  * Created by Administrator on 2017/9/8.
  */
 
-public class ClassifyViewPagerFragment extends Fragment {
+public class ClassifyViewPagerFragment extends Fragment implements IGetClassifyRecyclerviewTextNetworkDataView{
 
     private View view;
     private RecyclerView recyclerView;
@@ -44,8 +47,14 @@ public class ClassifyViewPagerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        initData();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        String classifytabid = getArguments().getString("classifytabid");
+        GetClassifyRecyclerviewTextNetworkDataPresenter getClassifyRecyclerviewTextNetworkDataPresenter = new GetClassifyRecyclerviewTextNetworkDataPresenter(this,classifytabid);
+        getClassifyRecyclerviewTextNetworkDataPresenter.getClassifyRecyclerViewTextNetworkData();
     }
 
     private void initView() {
@@ -54,7 +63,6 @@ public class ClassifyViewPagerFragment extends Fragment {
 
     private void initData() {
         final String classifytabid = getArguments().getString("classifytabid");
-        System.out.println("==============="+classifytabid);
         OkHttpClient okHttpClient = MyApplication.okHttpClient();
         Request request = new Request.Builder()
                 .url("http://169.254.254.18/mobile/index.php?act=goods_class&gc_id="+classifytabid)
@@ -88,5 +96,30 @@ public class ClassifyViewPagerFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public Context context() {
+        return getActivity();
+    }
+
+    @Override
+    public void onGetNetWorkDateSucced(final ClassifyRecyclerviewTextBean dataBean) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Gson gson = new Gson();
+                List<ClassifyRecyclerviewTextBean.DatasBean.ClassListBean> classtext_list = dataBean.getDatas().getClass_list();
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                recyclerView.setLayoutManager(linearLayoutManager);
+                MyClassifyRecyclerAdapter classifyRecyclerAdapter = new MyClassifyRecyclerAdapter(getActivity(),classtext_list);
+                recyclerView.setAdapter(classifyRecyclerAdapter);
+            }
+        });
+    }
+
+    @Override
+    public void onGetNetWorkDataFaild(String exception) {
+
     }
 }

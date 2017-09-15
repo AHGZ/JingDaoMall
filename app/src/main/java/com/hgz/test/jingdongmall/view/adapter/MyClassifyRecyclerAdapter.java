@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.hgz.test.jingdongmall.R;
 import com.hgz.test.jingdongmall.app.MyApplication;
-import com.hgz.test.jingdongmall.bean.ClassifyGridViewBean;
-import com.hgz.test.jingdongmall.bean.ClassifyRecyclerviewTextBean;
+import com.hgz.test.jingdongmall.model.bean.ClassifyGridViewBean;
+import com.hgz.test.jingdongmall.model.bean.ClassifyRecyclerviewTextBean;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,33 +28,31 @@ import okhttp3.Response;
  * Created by Administrator on 2017/9/9.
  */
 
-public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
+public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter {
     private ViewGroup parent;
     private List<ClassifyRecyclerviewTextBean.DatasBean.ClassListBean> classtext_list;
     private Activity activity;
 
 
     public MyClassifyRecyclerAdapter(Activity activity, List<ClassifyRecyclerviewTextBean.DatasBean.ClassListBean> classtext_list) {
-        this.classtext_list=classtext_list;
-        this.activity=activity;
+        this.classtext_list = classtext_list;
+        this.activity = activity;
     }
-
-
 
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        this.parent=parent;
-        View view=null;
+        this.parent = parent;
+        View view = null;
         RecyclerView.ViewHolder holder = null;
-        switch (viewType){
+        switch (viewType) {
             case 0:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.classify_recyclerview_items2, parent, false);
-                holder=new MyClassifyViewholder2(view);
+                holder = new MyClassifyViewholder2(view);
                 break;
             case 1:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.classify_recyclerview_items, parent, false);
-                holder=new MyClassifyViewholder(view);
+                holder = new MyClassifyViewholder(view);
 
                 break;
         }
@@ -63,9 +61,9 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemViewType(int position) {
-        if (position==0){
+        if (position == 0) {
             return 0;
-        }else {
+        } else {
             return 1;
         }
 
@@ -73,17 +71,17 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (getItemViewType(position)){
+        switch (getItemViewType(position)) {
             case 0:
-                MyClassifyViewholder2 myHolder2= (MyClassifyViewholder2) holder;
+                MyClassifyViewholder2 myHolder2 = (MyClassifyViewholder2) holder;
                 myHolder2.imageView.setImageResource(R.drawable.jsbundles_jdreactintlbrand_images_brand_enter_afterenter_bg);
                 break;
             case 1:
-                final MyClassifyViewholder myHolder= (MyClassifyViewholder) holder;
+                final MyClassifyViewholder myHolder = (MyClassifyViewholder) holder;
                 myHolder.textView.setText(classtext_list.get(position).getGc_name());
                 OkHttpClient okHttpClient = MyApplication.okHttpClient();
-                Request request=new Request.Builder()
-                        .url("http://169.254.254.18/mobile/index.php?act=goods_class&gc_id="+classtext_list.get(position).getGc_id())
+                Request request = new Request.Builder()
+                        .url("http://169.254.254.18/mobile/index.php?act=goods_class&gc_id=" + classtext_list.get(position).getGc_id())
                         .build();
                 okHttpClient.newCall(request).enqueue(new Callback() {
                     @Override
@@ -100,7 +98,7 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
                                 Gson gson = new Gson();
                                 ClassifyGridViewBean classifyGridViewBean = gson.fromJson(json, ClassifyGridViewBean.class);
                                 List<ClassifyGridViewBean.DatasBean.ClassListBean> classgridview_list = classifyGridViewBean.getDatas().getClass_list();
-                                MyGridViewAdapter myGridViewAdapter = new MyGridViewAdapter(parent.getContext(),classgridview_list);
+                                MyGridViewAdapter myGridViewAdapter = new MyGridViewAdapter(parent.getContext(), classgridview_list);
                                 myHolder.gridView.setAdapter(myGridViewAdapter);
                             }
                         });
@@ -111,6 +109,7 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
         }
 
     }
+
     public class MyClassifyViewholder extends RecyclerView.ViewHolder {
         private TextView textView;
         private GridView gridView;
@@ -122,6 +121,7 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
         }
 
     }
+
     public class MyClassifyViewholder2 extends RecyclerView.ViewHolder {
 
         private final ImageView imageView;
@@ -136,8 +136,5 @@ public class MyClassifyRecyclerAdapter extends RecyclerView.Adapter{
     @Override
     public int getItemCount() {
         return classtext_list.size();
-    }
-    private void initData(){
-
     }
 }

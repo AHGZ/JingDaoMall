@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hgz.test.jingdongmall.R;
-import com.hgz.test.jingdongmall.view.dao.MyZhuceDao;
+import com.hgz.test.jingdongmall.model.dao.MyZhuceDao;
 
 /**
  * Created by Administrator on 2017/9/13.
