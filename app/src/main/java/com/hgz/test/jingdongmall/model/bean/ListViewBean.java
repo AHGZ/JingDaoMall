@@ -8,6 +8,24 @@ public class ListViewBean {
     private String imageurl;
     private int price;
     private String title;
+    private int count;
+    private  boolean isSelect;
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public String getImageurl() {
         return imageurl;
@@ -33,9 +51,10 @@ public class ListViewBean {
         this.title = title;
     }
 
-    public ListViewBean(String imageurl, int price, String title) {
+    public ListViewBean(String imageurl, int price, String title,int count) {
         this.imageurl = imageurl;
         this.price = price;
         this.title = title;
+        this.count = count;
     }
 }

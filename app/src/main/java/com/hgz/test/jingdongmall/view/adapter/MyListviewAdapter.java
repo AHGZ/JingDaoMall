@@ -7,15 +7,13 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hgz.test.jingdongmall.R;
 import com.hgz.test.jingdongmall.model.bean.ListViewBean;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Administrator on 2017/9/10.
@@ -23,34 +21,36 @@ import java.util.Set;
 
 public class MyListviewAdapter extends BaseAdapter {
     private Context context;
-    private List<ListViewBean> list;
-    private HashMap<Integer, Boolean> hashMap;
-    int pricess=0;
-    int countss=0;
-    int oneprices=0;
-    private GetSumPrice getSumPrice;
-    private GetAllSelectSumPrice getAllSelectSumPrice;
-    private TextView price;
-    private TextView count;
 
-    public interface GetSumPrice{
-        void sumprice(int sum,int count);
+    private List<ListViewBean> list;
+
+    OnShopingChangeListener onShopingChangeListener;
+    OnShopingSelectAllListener onShopingSelectAllListener;
+    private boolean isAllSelected ;
+
+    public void setOnShopingChangeListener(OnShopingChangeListener onShopingChangeListener) {
+        this.onShopingChangeListener = onShopingChangeListener;
     }
-    public void setGetSumPrice(GetSumPrice getSumPrice){
-        this.getSumPrice=getSumPrice;
+    public void setOnShopingSelectAllListener(OnShopingSelectAllListener onShopingSelectAllListener) {
+        this.onShopingSelectAllListener = onShopingSelectAllListener;
     }
-    public interface GetAllSelectSumPrice{
-        void allSelectSumPrice(int sum,int count);
+
+    public interface OnShopingChangeListener {
+        void onCheckStateChange(boolean isAllChecked);
+        void onTotalPriceChange(int totalPrice);
+        void onTotalCount(int totalCount);
     }
-    public void setGetAllSelectSumPrice(GetAllSelectSumPrice getAllSelectSumPrice){
-        this.getAllSelectSumPrice=getAllSelectSumPrice;
+    public interface OnShopingSelectAllListener {
+        void onCheckStateChange(boolean isAllChecked);
+        void onTotalPriceChange(int totalPrice);
+        void onTotalCount(int totalCount);
     }
+
     public MyListviewAdapter(Context context, List<ListViewBean> list) {
-        hashMap = new HashMap<>();
         this.context = context;
-        this.list=list;
-        for (int i=0;i<list.size();i++){
-            hashMap.put(i,false);
+        this.list = list;
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).setSelect(false);
         }
     }
 
@@ -71,131 +71,160 @@ public class MyListviewAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        Viewhoder holder = null;
         if (convertView == null) {
             convertView = convertView.inflate(context, R.layout.shopping_listview_items, null);
+            holder = new Viewhoder();
+            holder.checkBox = (CheckBox) convertView.findViewById(R.id.listview_checkbox);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.listview_image);
+            holder.description = (TextView) convertView.findViewById(R.id.listview_description);
+            holder.color = (TextView) convertView.findViewById(R.id.listview_color);
+            holder.price = (TextView) convertView.findViewById(R.id.listview_price);
+            holder.cutDown = (ImageView) convertView.findViewById(R.id.listview_cut_down);
+            holder.count = (TextView) convertView.findViewById(R.id.listview_count);
+            holder.add = (ImageView) convertView.findViewById(R.id.listview_add);
+            convertView.setTag(holder);
+        } else {
+            holder = (Viewhoder) convertView.getTag();
         }
-        CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.listview_checkbox);
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.listview_image);
-        TextView description= (TextView) convertView.findViewById(R.id.listview_description);
-        TextView color = (TextView) convertView.findViewById(R.id.listview_color);
-        price = (TextView) convertView.findViewById(R.id.listview_price);
-        ImageView cutDown = (ImageView) convertView.findViewById(R.id.listview_cut_down);
-        count = (TextView) convertView.findViewById(R.id.listview_count);
-        ImageView add = (ImageView) convertView.findViewById(R.id.listview_add);
-        description.setText(list.get(position).getTitle());
-        price.setText(list.get(position).getPrice()+"");
-        Glide.with(context).load(list.get(position).getImageurl()).into(imageView);
 
-        checkBox.setOnClickListener(new View.OnClickListener() {
+        holder.checkBox.setChecked(list.get(position).isSelect());
+        holder.description.setText(list.get(position).getTitle());
+        holder.price.setText(list.get(position).getPrice() + "");
+        Glide.with(context).load(list.get(position).getImageurl()).into(holder.imageView);
+
+        final Viewhoder finalHolder = holder;
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                hashMap.put(position, !hashMap.get(position));
+                if (list.get(position).isSelect()){
+                    list.get(position).setSelect(false);
+                    if(onShopingChangeListener!=null){
+                        onShopingChangeListener.onCheckStateChange(false);
+                    }
+                }else {
+                    list.get(position).setSelect(true);
+                    if(onShopingChangeListener!=null){
+                        onShopingChangeListener.onCheckStateChange(true);
+                    }
+                }
                 notifyDataSetChanged();
-                int oneprice = Integer.parseInt(price.getText().toString());
-                int counts = Integer.parseInt(count.getText().toString());
-                int prices=0;
-                int countes=0;
-                if (hashMap.get(position)==true){
-                   prices=pricess+oneprice*counts;
-                    countes=countss+counts;
-                    pricess=prices;
-                    countss=countes;
-                    if (getSumPrice!=null){
-                        getSumPrice.sumprice(prices,countes);
-                    }
-                }else{
-                    if (getSumPrice!=null){
-                        getSumPrice.sumprice(pricess-oneprice*counts,countss-counts);
-                        countss=countss-counts;
-                        pricess=pricess-oneprice*counts;
-                    }
-                }
-
+                addAndcut();
+                Toast.makeText(context,"复选框被点击了",Toast.LENGTH_SHORT).show();
             }
         });
-        checkBox.setChecked(hashMap.get(position));
-        cutDown.setOnClickListener(new View.OnClickListener() {
+
+        holder.cutDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int counts = Integer.parseInt(count.getText().toString());
-                int oneprice = Integer.parseInt(price.getText().toString());
-                int prices=0;
-                if (counts>1){
-                    count.setText((counts-1)+"");
-//                    if (hashMap.get(position)==true){
-//                        prices+=oneprice*counts;
-//                        if (getSumPrice!=null){
-//                            getSumPrice.sumprice(prices,counts);
-//                        }
-//                    }
-//
-//                }else{
-//                    count.setText(1+"");
-//                    if (getSumPrice!=null){
-//                        getSumPrice.sumprice(prices-oneprice*counts,counts-counts);
-//                    }
+                int counts = Integer.parseInt(finalHolder.count.getText().toString());
+                if (counts >= 2) {
+                    counts--;
+                    finalHolder.count.setText(counts+"");
+                    list.get(position).setCount(counts);
+                    addAndcut();
+                    Toast.makeText(context,"按钮减被点击了",Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
-        add.setOnClickListener(new View.OnClickListener() {
+
+        holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int counts = Integer.parseInt(count.getText().toString());
-                count.setText((counts+1)+"");
-//                int oneprice = Integer.parseInt(price.getText().toString());
-//                int prices=0;
-//                if (hashMap.get(position)==true){
-//                    prices=pricess+oneprice*counts-oneprice*counts;
-//                    pricess=prices;
-//                    if (getSumPrice!=null){
-//                        getSumPrice.sumprice(prices,counts);
-//                    }
-//                }else{
-//                    if (getSumPrice!=null){
-//                        getSumPrice.sumprice(prices-oneprice*counts,counts-counts);
-//                    }
-//                }
+                int counts = Integer.parseInt(finalHolder.count.getText().toString());
+                counts++;
+                finalHolder.count.setText(counts + "");
+                list.get(position).setCount(counts);
+                addAndcut();
+                Toast.makeText(context,"按钮加被点击了",Toast.LENGTH_SHORT).show();
             }
         });
-
         return convertView;
     }
 
 
 
-    //全选
-    public void allSelect(){
-        Set<Map.Entry<Integer, Boolean>> entries = hashMap.entrySet();
-        boolean shouldSelectedAll = false;
-        int num=0;
-        for (Map.Entry<Integer, Boolean> entry: entries) {
-            Boolean value = entry.getValue();
-            if (!value){
-                shouldSelectedAll=true;
 
-                break;
+
+
+    int totalPrice() {
+        int totalPrice = 0;
+        for (int i = 0; i < list.size(); i++) {
+            Boolean aBoolean = list.get(i).isSelect();
+            if (aBoolean) {
+                ListViewBean listViewBean = list.get(i);
+                int price = listViewBean.getPrice();
+                int count = listViewBean.getCount();
+                totalPrice += price * count;
             }
-
         }
-        for (Map.Entry<Integer, Boolean> entry: entries) {
-            entry.setValue(shouldSelectedAll);
-            if (entry.getValue()==true){
-                int oneprice = Integer.parseInt(price.getText().toString());
-                int counts = Integer.parseInt(count.getText().toString());
-                num++;
-                if (getAllSelectSumPrice!=null){
-                    getAllSelectSumPrice.allSelectSumPrice(oneprice*num,num);
-                }
-            }else{
-                getAllSelectSumPrice.allSelectSumPrice(0,0);
+
+        return totalPrice;
+    }
+    int totalSumCount(){
+        int totalSumCount = 0;
+        for (int i = 0; i < list.size(); i++) {
+            Boolean aBoolean = list.get(i).isSelect();
+            if (aBoolean) {
+                ListViewBean listViewBean = list.get(i);
+                int count = listViewBean.getCount();
+                totalSumCount+=count;
             }
+        }
+        return totalSumCount;
+    }
+
+    class Viewhoder {
+        CheckBox checkBox;
+        ImageView imageView;
+        TextView description;
+        TextView color;
+        TextView price;
+        ImageView cutDown;
+        TextView count;
+        ImageView add;
+    }
+    //全选
+    public void allSelect() {
+
+
+        if (isAllSelected==true){
+            isAllSelected = false;
+            for (int i = 0; i <list.size();i++){
+                list.get(i).setSelect(false);
+            }
+        }else {
+            isAllSelected = true;
+            for (int i = 0; i <list.size();i++){
+                list.get(i).setSelect(true);
+            }
+        }
+
+
+        int i = totalPrice();
+        int i1 = totalSumCount();
+        if (onShopingSelectAllListener!=null){
+            onShopingSelectAllListener.onTotalPriceChange(i);
+            onShopingSelectAllListener.onTotalCount(i1);
+            onShopingSelectAllListener.onCheckStateChange(isAllSelected);
         }
         notifyDataSetChanged();
+
     }
+
+    private void addAndcut() {
+        int i = totalPrice();
+        int i1 = totalSumCount();
+        if (onShopingChangeListener!=null){
+            onShopingChangeListener.onTotalPriceChange(i);
+            onShopingChangeListener.onTotalCount(i1);
+        }
+
+    }
+
     //移除item
-    public void removeItem(int position){
+    public void removeItem(int position) {
         list.remove(position);
         notifyDataSetChanged();
     }

@@ -8,7 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="20dp">
-
         <TextView
             android:id="@+id/tv_gouwuche"
             android:layout_width="wrap_content"
@@ -17,7 +16,6 @@
             android:gravity="center"
             android:text="购物车"
             android:textSize="25sp" />
-
         <ImageView
             android:id="@+id/iv_weizhi"
             android:layout_width="20dp"
@@ -25,8 +23,6 @@
             android:layout_centerInParent="true"
             android:layout_toRightOf="@id/tv_gouwuche"
             android:src="@drawable/a" />
-
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +31,6 @@
             android:layout_toLeftOf="@+id/xiaoxi"
             android:text="编辑"
             android:textSize="20sp" />
-
         <ImageView
             android:id="@+id/xiaoxi"
             android:layout_width="25dp"
@@ -44,7 +39,6 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:src="@drawable/a9s" />
-
     </RelativeLayout>
 
     <View
@@ -73,7 +67,6 @@
                 android:id="@+id/listview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-
             </ListView>
             <ImageView
                 android:layout_width="match_parent"

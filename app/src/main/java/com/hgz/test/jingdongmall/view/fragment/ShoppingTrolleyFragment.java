@@ -26,10 +26,10 @@ import com.hgz.test.jingdongmall.R;
 import com.hgz.test.jingdongmall.model.bean.ListViewBean;
 import com.hgz.test.jingdongmall.model.bean.TuijianBean;
 import com.hgz.test.jingdongmall.presenter.GetShoppingNetworkDataPresenter;
+import com.hgz.test.jingdongmall.utils.CalculatedHeightUtil;
 import com.hgz.test.jingdongmall.view.IView.IGetHomeNetworkDataView;
 import com.hgz.test.jingdongmall.view.adapter.MyListviewAdapter;
 import com.hgz.test.jingdongmall.view.adapter.MyShoppingRecyclerviewAdapter;
-import com.hgz.test.jingdongmall.utils.CalculatedHeightUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,6 @@ public class ShoppingTrolleyFragment extends Fragment implements IGetHomeNetwork
     private Button jiesuan;
     private SwipyRefreshLayout refreshLayout;
     private Handler handler = null;
-    int page = 1;
     private MyShoppingRecyclerviewAdapter myShoppingRecyclerviewAdapter;
     private GetShoppingNetworkDataPresenter getShoppingNetworkDataPresenter;
 
@@ -59,7 +58,6 @@ public class ShoppingTrolleyFragment extends Fragment implements IGetHomeNetwork
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_shopping_trolley, container, false);
-
         return view;
     }
 
@@ -98,22 +96,17 @@ public class ShoppingTrolleyFragment extends Fragment implements IGetHomeNetwork
             }
         });
 
-
-
         allselect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (myListviewAdapter==null){
+                    return;
+                }
                 myListviewAdapter.allSelect();
-                myListviewAdapter.setGetAllSelectSumPrice(new MyListviewAdapter.GetAllSelectSumPrice() {
-                    @Override
-                    public void allSelectSumPrice(int sum, int count) {
-                        heji.setText("合计：¥" + sum + ".00");
-                        jiesuan.setText("去结算" + "(" + count + ")");
-                    }
-                });
-
             }
         });
+
+
         jiesuan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,21 +165,46 @@ public class ShoppingTrolleyFragment extends Fragment implements IGetHomeNetwork
                 myShoppingRecyclerviewAdapter.setOnOnItemsClickListener(new MyShoppingRecyclerviewAdapter.OnItemsClickListener() {
                     @Override
                     public void setItemsOnClick(int position) {
-                        ListViewBean listViewBean = new ListViewBean(goods_list.get(position).getThumb_url(), goods_list.get(position).getNormal_price(), goods_list.get(position).getGoods_name());
+                        ListViewBean listViewBean = new ListViewBean(goods_list.get(position).getThumb_url(), goods_list.get(position).getNormal_price(), goods_list.get(position).getGoods_name(),1);
                         lists.add(listViewBean);
                         myListviewAdapter = new MyListviewAdapter(getContext(), lists);
                         listView.setAdapter(myListviewAdapter);
                         CalculatedHeightUtil.setListHeight(listView);
                         myListviewAdapter.notifyDataSetChanged();
-                        myListviewAdapter.setGetSumPrice(new MyListviewAdapter.GetSumPrice() {
+                        myListviewAdapter.setOnShopingSelectAllListener(new MyListviewAdapter.OnShopingSelectAllListener() {
                             @Override
-                            public void sumprice(int sum, int count) {
-                                heji.setText("合计：¥" + sum + ".00");
-                                jiesuan.setText("去结算" + "(" + count + ")");
+                            public void onCheckStateChange(boolean isAllChecked) {
+
                             }
 
-                        });
+                            @Override
+                            public void onTotalPriceChange(int totalPrice) {
+                                heji.setText("合计：¥" + totalPrice + ".00");
+                            }
 
+                            @Override
+                            public void onTotalCount(int totalCount) {
+                                jiesuan.setText("去结算" + "(" + totalCount + ")");
+                            }
+                        });
+                        myListviewAdapter.setOnShopingChangeListener(new MyListviewAdapter.OnShopingChangeListener() {
+                            @Override
+                            public void onCheckStateChange(boolean isAllChecked) {
+
+                            }
+
+                            @Override
+                            public void onTotalPriceChange(int totalPrice) {
+                                heji.setText("合计：¥" + totalPrice + ".00");
+
+                            }
+
+                            @Override
+                            public void onTotalCount(int totalCount) {
+                                jiesuan.setText("去结算" + "(" + totalCount + ")");
+
+                            }
+                        });
                     }
                 });
             }
@@ -197,4 +215,5 @@ public class ShoppingTrolleyFragment extends Fragment implements IGetHomeNetwork
     public void onGetNetWorkDataFaild(String exception) {
 
     }
+
 }

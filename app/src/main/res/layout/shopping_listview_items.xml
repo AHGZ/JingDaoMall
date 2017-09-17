@@ -30,15 +30,18 @@
             android:id="@+id/listview_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="何国忠何国忠何国忠何国忠何国忠何国忠何国忠何国忠何国忠何国忠" />
 
         <TextView
             android:id="@+id/listview_color"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="颜色：黑色" />
+            android:text="颜色：黑色"
+            android:layout_weight="1"/>
 
         <LinearLayout
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
