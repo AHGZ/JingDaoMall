@@ -144,10 +144,6 @@ public class MyListviewAdapter extends BaseAdapter {
     }
 
 
-
-
-
-
     int totalPrice() {
         int totalPrice = 0;
         for (int i = 0; i < list.size(); i++) {
@@ -188,7 +184,6 @@ public class MyListviewAdapter extends BaseAdapter {
     //全选
     public void allSelect() {
 
-
         if (isAllSelected==true){
             isAllSelected = false;
             for (int i = 0; i <list.size();i++){
@@ -200,8 +195,6 @@ public class MyListviewAdapter extends BaseAdapter {
                 list.get(i).setSelect(true);
             }
         }
-
-
         int i = totalPrice();
         int i1 = totalSumCount();
         if (onShopingSelectAllListener!=null){
@@ -212,7 +205,7 @@ public class MyListviewAdapter extends BaseAdapter {
         notifyDataSetChanged();
 
     }
-
+    //添加
     private void addAndcut() {
         int i = totalPrice();
         int i1 = totalSumCount();

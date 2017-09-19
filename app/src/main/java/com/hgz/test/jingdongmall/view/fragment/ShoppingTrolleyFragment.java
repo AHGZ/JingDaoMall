@@ -216,4 +216,5 @@ public class ShoppingTrolleyFragment extends Fragment implements IGetHomeNetwork
 
     }
 
+
 }

@@ -1,7 +1,6 @@
 package com.hgz.test.jingdongmall.view.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -13,19 +12,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.hgz.test.jingdongmall.R;
-import com.hgz.test.jingdongmall.view.activity.LoginActivity;
+import com.hgz.test.jingdongmall.base.MyListener;
 
 /**
  * Created by Administrator on 2017/9/6.
  */
 
-public class MineFragment extends Fragment implements View.OnClickListener {
+public class MineFragment extends Fragment{
 
     private View view;
     private RelativeLayout loginOrRegister;
@@ -45,22 +45,25 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        loginOrRegister.setOnClickListener(this);
+        loginOrRegister.setOnClickListener(new MyListener() {
+            @Override
+            public Context getContent() {
+                return getActivity();
+            }
+        });
 
     }
     private void initView(){
         loginOrRegister = (RelativeLayout) view.findViewById(R.id.rel_LoginOrRegister);
         ivLoginOrRegister = (ImageView) view.findViewById(R.id.Iv_LoginOrRegister);
         tvLoginOrRegister = (TextView) view.findViewById(R.id.tv_LoginOrRegister);
-    }
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-           case  R.id.rel_LoginOrRegister:
-               Intent intent = new Intent(getActivity(), LoginActivity.class);
-               startActivity(intent);
-               break;
-        }
+        RadioButton radioButton = (RadioButton) view.findViewById(R.id.fukuan);
+        radioButton.setOnClickListener(new MyListener() {
+            @Override
+            public Context getContent() {
+                return getActivity();
+            }
+        });
     }
 
     @Override
