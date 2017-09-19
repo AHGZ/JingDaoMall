@@ -23,6 +23,7 @@ import com.hgz.test.jingdongmall.R;
 import com.hgz.test.jingdongmall.model.bean.TuijianBean;
 import com.hgz.test.jingdongmall.presenter.GetHomeNetworkDataPresenter;
 import com.hgz.test.jingdongmall.view.IView.IGetHomeNetworkDataView;
+import com.hgz.test.jingdongmall.view.activity.MyDialog;
 import com.hgz.test.jingdongmall.view.adapter.MyHomeRecyclerviewAdapter;
 import com.hgz.test.jingdongmall.view.adapter.MyHomeViewPagerAdapter;
 import com.library.zxing.activity.QRCodeScanFragment;
@@ -94,7 +95,6 @@ public class HomeFragment extends QRCodeScanFragment implements IGetHomeNetworkD
         });
         getShouyeNetworkDataPresenter = new GetHomeNetworkDataPresenter(this);
         getShouyeNetworkDataPresenter.getShouYeNetworkData();
-//        initNetWorkData();
         swipyRefreshLayout.setDirection(SwipyRefreshLayoutDirection.BOTH);
         swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
@@ -104,7 +104,6 @@ public class HomeFragment extends QRCodeScanFragment implements IGetHomeNetworkD
                     @Override
                     public void run() {
                         getShouyeNetworkDataPresenter.getShouYeNetworkData();
-//                        initNetWorkData();
                         swipyRefreshLayout.setRefreshing(false);
                         Toast.makeText(getActivity(), "加载成功", Toast.LENGTH_SHORT).show();
                     }
@@ -117,7 +116,6 @@ public class HomeFragment extends QRCodeScanFragment implements IGetHomeNetworkD
                     @Override
                     public void run() {
                         getShouyeNetworkDataPresenter.getShouYeNetworkData();
-//                        initNetWorkData();
                         swipyRefreshLayout.setRefreshing(false);
                         Toast.makeText(getActivity(), "加载成功", Toast.LENGTH_SHORT).show();
                     }
@@ -190,7 +188,7 @@ public class HomeFragment extends QRCodeScanFragment implements IGetHomeNetworkD
        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                List<TuijianBean.GoodsListBean> goods_list = dataBean.getGoods_list();
+                final List<TuijianBean.GoodsListBean> goods_list = dataBean.getGoods_list();
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
                 recyclerView.setLayoutManager(gridLayoutManager);
                 if (myHomeRecyclerviewAdapter == null) {
@@ -200,6 +198,12 @@ public class HomeFragment extends QRCodeScanFragment implements IGetHomeNetworkD
                     myHomeRecyclerviewAdapter.loadMore(goods_list, flag);
                     myHomeRecyclerviewAdapter.notifyDataSetChanged();
                 }
+                myHomeRecyclerviewAdapter.setOnOnItemsClickListener(new MyHomeRecyclerviewAdapter.OnItemsClickListener() {
+                    @Override
+                    public void setItemsOnClick(int position) {
+                        new MyDialog(getActivity(),goods_list.get(position).getThumb_url()).show();
+                    }
+                });
             }
         });
     }

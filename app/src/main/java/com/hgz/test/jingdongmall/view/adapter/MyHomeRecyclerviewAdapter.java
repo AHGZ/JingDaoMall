@@ -20,7 +20,7 @@ import java.util.List;
 
 public class MyHomeRecyclerviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-//    private OnItemsClickListener onItemsClickListener;
+    private OnItemsClickListener onItemsClickListener;
     private List<TuijianBean.GoodsListBean> goods_list;
     private FragmentActivity activity;
     public MyHomeRecyclerviewAdapter(FragmentActivity activity, List<TuijianBean.GoodsListBean> goods_list) {
@@ -28,12 +28,12 @@ public class MyHomeRecyclerviewAdapter extends RecyclerView.Adapter<RecyclerView
         this.activity=activity;
     }
 
-//    public interface OnItemsClickListener{
-//        void setItemsOnClick(int position);
-//    }
-//    public void setOnOnItemsClickListener(OnItemsClickListener onItemsClickListener){
-//        this.onItemsClickListener=onItemsClickListener;
-//    }
+    public interface OnItemsClickListener{
+        void setItemsOnClick(int position);
+    }
+    public void setOnOnItemsClickListener(OnItemsClickListener onItemsClickListener){
+        this.onItemsClickListener=onItemsClickListener;
+    }
     public void loadMore(List<TuijianBean.GoodsListBean> goods_lists,boolean flag){
         for (TuijianBean.GoodsListBean list: goods_lists) {
             if (true){
@@ -56,6 +56,14 @@ public class MyHomeRecyclerviewAdapter extends RecyclerView.Adapter<RecyclerView
         MyViewHolder myHolder = (MyViewHolder) holder;
         myHolder.description.setText(goods_list.get(position).getGoods_name());
         myHolder.price.setText("¥"+goods_list.get(position).getNormal_price());
+        myHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemsClickListener!=null) {
+                    onItemsClickListener.setItemsOnClick(position);
+                }
+            }
+        });
         Glide.with(activity).load(goods_list.get(position).getThumb_url()).into(myHolder.image);
     }
 
@@ -64,9 +72,10 @@ public class MyHomeRecyclerviewAdapter extends RecyclerView.Adapter<RecyclerView
         private TextView description;
         private TextView price;
         private ImageView icon;
-
+        View itemView;
         public MyViewHolder(View itemView) {
             super(itemView);
+            this.itemView=itemView;
             image = (ImageView) itemView.findViewById(R.id.home_recyclerview_image);
             description = (TextView) itemView.findViewById(R.id.home_recyclerview_description);
             price = (TextView) itemView.findViewById(R.id.home_recyclerview_price);
